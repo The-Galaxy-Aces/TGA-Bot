@@ -12,9 +12,10 @@ class Insult:
 
     def generateInsult(self):
         resp = requests.get(self.uri)
-        if resp.status_code != 200:
-            print("Error: not 200")
-        self.insult = resp.json()["insult"]
+        if resp.status_code == 200:
+            self.insult = resp.json()["insult"]
+        else:
+            raise Exception("Status Code!=200")
 
     def getInsult(self):
         self.generateInsult()

@@ -15,6 +15,8 @@ def setup_logging():
         logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
     log.addHandler(handler)
 
+    return log
+
 
 def read_config():
     with open("config.json", "r") as file:
@@ -42,7 +44,7 @@ def main():
 
     print("Starting up The Galaxy Aces Bot!")
 
-    setup_logging()
+    log = setup_logging()
 
     config = read_config()
 
@@ -58,12 +60,16 @@ def main():
 
     @client.event
     async def on_message(message):
-        if message.author == client.user:
-            return
-        if features["insults"] and message.content.startswith("!insult"):
-            i = Insult()
-            for x in message.mentions:
-                await message.channel.send(x.mention + i.getInsult())
+        try:
+            if message.author == client.user:
+                return
+            if features["insults"] and message.content.startswith("!insult"):
+                i = Insult()
+                for x in message.mentions:
+                    await message.channel.send(x.mention + i.getInsult())
+        except Exception as err:
+            print(err)
+            log.error(err)
 
     client.run(token)
 
