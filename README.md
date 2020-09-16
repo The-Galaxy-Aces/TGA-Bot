@@ -3,15 +3,15 @@
 ## Configuration
 Copy the following json to a file named "config.json" to the base directory and substitute your Discord API Token.
 
-```
+```json
 {
-    "bot_name": "Your Bot Name",
-    "token": "Your Discord API Key",
-    "enabled_features": {
-        "insults": {
-            "enabled": "True"
-        }
-    }
+"bot_name": "Your Bot Name",
+"token": "Your Discord API Key",
+"enabled_features": {
+"insults": {
+"enabled": "True"
+}
+}
 }
 ```
 
@@ -19,7 +19,7 @@ Copy the following json to a file named "config.json" to the base directory and 
 
 Run this command from your shell. It will install any needed dependencies and setup a virtual environment.
 
-```
+```sh
 ./build.sh
 ```
 
@@ -27,6 +27,6 @@ Run this command from your shell. It will install any needed dependencies and se
 
 Run this command from your shell:
 
-```
+```sh
 python main.py
 ```
