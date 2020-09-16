@@ -1,5 +1,4 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/0d18ec4c208743df8101d08d4ce71b82)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Travisivart/TGA-Bot&amp;utm_campaign=Badge_Grade)
-[![Unlicence](https://upload.wikimedia.org/wikipedia/commons/6/62/PD-icon.svg =30x30)](https://github.com/Travisivart/TGA-Bot/blob/main/LICENSE)
 
 ## Configuration
 Copy the following json to a file named "config.json" to the base directory and substitute your Discord API Token.
