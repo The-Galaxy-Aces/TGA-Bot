@@ -18,9 +18,15 @@ Copy the following json to a file named "config.json" to the base directory and 
 ## Build the Bot
 
 Run this command from your shell. It will install any needed dependencies and setup a virtual environment.
+
+```
 ./build.sh
+```
 
 ## Start the Bot
 
 Run this command from your shell:
+
+```
 python main.py
+```
