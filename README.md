@@ -3,6 +3,7 @@
 ## Configuration
 Copy the following json to a file named "config.json" to the base directory and substitute your Discord API Token.
 
+```
 {
     "bot_name": "Your Bot Name",
     "token": "Your Discord API Key",
@@ -12,7 +13,7 @@ Copy the following json to a file named "config.json" to the base directory and 
         }
     }
 }
-
+```
 
 ## Build the Bot
 
