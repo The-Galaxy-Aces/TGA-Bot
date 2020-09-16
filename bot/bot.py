@@ -39,6 +39,9 @@ class Bot(discord.Client):
             self.configDict = json.load(file)
         self.name = self.configDict["bot_name"]
         self.token = self.configDict["token"]
+        if self.token == "Your Discord API Key" or not self.token:
+            print("ERROR: No API Key. Please configure in config.json")
+            self.log.error("No API Key. Please configure in config.json")
 
     def enable_features(self):
 
