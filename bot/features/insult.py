@@ -7,7 +7,6 @@ class Insult:
         """The Insult class
         Don't let the mean insults hurt your feelings
         """
-
         #TODO: allow for a variety of insults from different APIs
         #TODO: ADD: https://insult.mattbas.org/api
 
