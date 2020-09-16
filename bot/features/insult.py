@@ -15,8 +15,8 @@ class Insult:
         if resp.status_code == 200:
             self.insult = resp.json()["insult"]
         else:
-            raise Exception(__self__.method.__qualname +
-                            ": Error in request: Status Code!=200")
+            raise Exception(
+                "Insult.generate_insult: Error in request: Status Code!=200")
 
     def getInsult(self):
         self.generateInsult()

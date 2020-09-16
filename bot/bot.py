@@ -10,7 +10,7 @@ class Bot(discord.Client):
     def __init__(self, name, configFile):
         super().__init__()
 
-        self.name = name
+        self.name = ""
         self.token = ""
         self.configDict = {}
         self.features = {}
@@ -28,14 +28,17 @@ class Bot(discord.Client):
         self.log.addHandler(self.handler)
 
         self.process_config(configFile)
+        print("\nStarting up " + self.name + "!\n")
+
+        self.enable_features()
 
         self.log.info("Bot initalized")
 
     def process_config(self, configFile):
         with open(configFile, "r") as file:
             self.configDict = json.load(file)
+        self.name = self.configDict["bot_name"]
         self.token = self.configDict["token"]
-        self.enable_features()
 
     def enable_features(self):
 
@@ -46,17 +49,17 @@ class Bot(discord.Client):
                 print(f'\t{x}')
         print("")
 
-    def setLoggingLevel(self, level):
+    def set_logging_level(self, level):
         if level in [
                 logging.NOTSET, logging.DEBUG, logging.INFO, logging.WARNING,
                 logging.ERROR, logging.CRITICAL
         ]:
             self.log.setLevel(logging.DEBUG)
         else:
-            self.log.error(__self__.method.__qualname +
-                           "Invalid logging level: " + level)
+            self.log.error("Bot.set_logging_level: Invalid logging level: " +
+                           level)
 
-    def getToken(self):
+    def get_token(self):
         return self.token
 
     async def on_ready(self):
