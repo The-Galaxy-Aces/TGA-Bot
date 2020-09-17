@@ -3,12 +3,13 @@ import html
 
 
 class Insult:
+    """The Insult class
+    Don't let the mean insults hurt your feelings
+    """
     def __init__(self):
-        """The Insult class
-        Don't let the mean insults hurt your feelings
-        """
         #TODO: allow for a variety of insults from different APIs
         #TODO: ADD: https://insult.mattbas.org/api
+        #TODO: ADD: https://generatorfun.com/insult-generator
 
         self.uri = "https://evilinsult.com/generate_insult.php?lang=en&type=json"
         self.insult = ""
