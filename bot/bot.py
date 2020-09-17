@@ -11,6 +11,9 @@ class Bot(discord.Client):
     The bot can do lots of neat things
     """
     def __init__(self, name, configFile):
+        """The Bot class.
+        The bot can do lots of neat things
+        """
         super().__init__()
 
         self.name = ""
