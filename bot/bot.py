@@ -7,6 +7,9 @@ from bot.features.insult import Insult
 
 
 class Bot(discord.Client):
+    """The Bot class.
+    The bot can do lots of neat things
+    """
     def __init__(self, name, configFile):
         """The Bot class.
         The bot can do lots of neat things
