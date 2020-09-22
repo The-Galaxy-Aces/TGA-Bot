@@ -3,6 +3,7 @@ import html
 import discord
 import os
 import fnmatch
+import random
 from discord.ext import commands
 
 
@@ -36,18 +37,27 @@ class Music(commands.Cog):
         print("Music is ready!")
 
     @commands.command()
-    async def music(self, ctx):
+    async def music(self, ctx, *args):
+
+        if len(args) == 0:
+            await ctx.send(
+                "To play music, search for an album using:\n!music ALBUM_NAME")
+            return
 
         # TODO: Major cleanup of the searching
         for root, dirs, files in os.walk(self.localPath):
             for dir in dirs:
-                if fnmatch.fnmatch(dir, "*Donkey Kong Country*"):
+                if fnmatch.fnmatch(dir, "*" + ' '.join(args) + "*"):
                     for root2, dirs2, files2 in os.walk(root + "/" + dir):
                         for file in files2:
-                            print(root2 + "/" + file)
+                            # TODO: Only allow certain media types (exclude
+                            # things like jpg which may be cover art included
+                            # with the album)
+                            # print(root2 + "/" + file)
                             self.queue.append(root2 + "/" + file)
 
-        await ctx.message.channel.send("Queue size: " + str(len(self.queue)))
+        random.shuffle(self.queue)
+
         if type(self.voiceClient) is str or not self.voiceClient.is_connected(
         ):
             channel = ctx.guild.get_channel(
@@ -66,7 +76,7 @@ class Music(commands.Cog):
 
     @commands.command()
     async def stop(self, ctx):
-        self.voiceClient.pause()
+        self.queue = []
         self.voiceClient.stop()
 
     @commands.command()
