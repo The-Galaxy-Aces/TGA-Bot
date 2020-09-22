@@ -5,6 +5,7 @@ import json
 from time import localtime, strftime, sleep
 
 from bot.features.insult import Insult
+from bot.features.music.music import Music
 
 
 class Bot(discord.ext.commands.Bot):
@@ -38,7 +39,6 @@ class Bot(discord.ext.commands.Bot):
 
         self.enable_features()
 
-        self.add_cog(Insult(self))
         self.log.info("Bot initalized")
 
     def process_config(self, configFile):
@@ -55,7 +55,7 @@ class Bot(discord.ext.commands.Bot):
         print("Enabled features:")
         for x in self.configDict["enabled_features"]:
             if self.configDict["enabled_features"][x]["enabled"] == "True":
-                self.features[x] = "True"
+                self.add_cog(eval(x.capitalize())(self))
                 print(f'\t{x}')
         print("")
 
