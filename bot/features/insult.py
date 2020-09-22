@@ -19,19 +19,19 @@ class Insult(commands.Cog):
         # TODO: ADD: https://generatorfun.com/insult-generator
 
         self.uri = "https://evilinsult.com/generate_insult.php?lang=en&type=json"
-        self.insult = ""
+        self.myInsult = ""
 
     def generateInsult(self):
         resp = requests.get(self.uri)
         if resp.status_code == 200:
-            self.insult = resp.json()["insult"]
+            self.myInsult = resp.json()["insult"]
         else:
             raise Exception(
                 "Insult.generate_insult: Error in request: Status Code!=200")
 
     def getInsult(self):
         self.generateInsult()
-        return html.unescape(self.insult)
+        return html.unescape(self.myInsult)
 
     @commands.Cog.listener()
     async def on_ready(self):
