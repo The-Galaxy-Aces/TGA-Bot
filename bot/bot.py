@@ -39,7 +39,6 @@ class Bot(discord.ext.commands.Bot):
 
         self.enable_features()
 
-        self.add_cog(Insult(self))
         self.log.info("Bot initalized")
 
     def process_config(self, configFile):
