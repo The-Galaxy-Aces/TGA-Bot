@@ -23,6 +23,13 @@ class Music(commands.Cog):
 
     def playNext(self):
 
+        print("Current queue")
+        for x in self.queue:
+            if x == self.queue[self.currSong]:
+                print("\t" + x + " <<<<<<<<<")
+            else:
+                print("\t" + x)
+
         if len(self.queue) > 0 and self.currSong < len(self.queue):
             self.voiceClient.play(discord.FFmpegPCMAudio(
                 self.queue[self.currSong]),
@@ -117,6 +124,7 @@ class Music(commands.Cog):
     @commands.command()
     async def stop(self, ctx):
         self.queue.clear()
+        self.currSong = 0
         self.voiceClient.stop()
 
     @commands.command()
