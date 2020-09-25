@@ -16,34 +16,28 @@ class Music(commands.Cog):
         self.bot = bot
         self._last_member = None
         self.queue = []
-        self.previousQueue = []
         self.voiceClient = ""
-
         self.localPath = "/music"
-
-        # TODO: In addition to the currSong, maybe grab additional metadata from the file for display
-        self.currSong = ""
+        self.currSong = 0
 
     def playNext(self):
-        if len(self.queue) > 0:
-            self.currSong = self.queue.pop()
-            self.voiceClient.play(discord.FFmpegPCMAudio(self.currSong),
+
+        if len(self.queue) > 0 and self.currSong < len(self.queue):
+            self.voiceClient.play(discord.FFmpegPCMAudio(
+                self.queue[self.currSong]),
                                   after=lambda e: self.finishedSong())
             self.voiceClient.is_playing()
+        else:
+            self.voiceClient.stop()
 
-    def playPrevious(self):
-        prevSong = self.currSong
-        self.currSong = self.previousQueue.pop()
-        self.queue.append(prevSong)
-        self.voiceClient.play(discord.FFmpegPCMAudio(self.currSong),
-                              after=lambda e: self.playNext())
-        self.voiceClient.is_playing()
-        # TODO: If using a local library for music, load all the local music into
-        # A database so that we can quickly search and find music to play
+    def adjustQueue(self):
+        self.currSong -= 2
+
+    # TODO: If using a local library for music, load all the local music into
+    # A database so that we can quickly search and find music to play
 
     def finishedSong(self):
-        print("Finished song!")
-        self.previousQueue.insert(0, self.currSong)
+        self.currSong += 1
         self.playNext()
 
     @commands.Cog.listener()
@@ -66,11 +60,13 @@ class Music(commands.Cog):
                 if fnmatch.fnmatch(dir, "*" + ' '.join(args) + "*"):
                     for root2, dirs2, files2 in os.walk(root + "/" + dir):
                         for file in files2:
-                            # TODO: Only allow certain media types (exclude
-                            # things like jpg which may be cover art included
-                            # with the album)
-                            # print(root2 + "/" + file)
-                            newQueue.append(root2 + "/" + file)
+                            if file.endswith('.mp3') or file.endswith(
+                                    '.mp4'
+                            ) or file.endswith('.flac') or file.endswith(
+                                    '.ogg') or file.endswith(
+                                        '.m4a') or file.endswith(
+                                            '.wav') or file.endswith('.wma'):
+                                newQueue.append(root2 + "/" + file)
 
         if len(newQueue) == 0:
             await ctx.message.channel.send(
@@ -90,31 +86,30 @@ class Music(commands.Cog):
         else:
             self.voiceClient.stop()
 
-        self.currSong = self.queue.pop()
-        self.voiceClient.play(discord.FFmpegPCMAudio(self.currSong),
-                              after=lambda e: self.playNext())
-        self.voiceClient.is_playing()
+        self.playNext()
+        await ctx.message.channel.send("Now playing: " +
+                                       self.queue[self.currSong])
 
     @commands.command()
     async def next(self, ctx):
         self.voiceClient.stop()
-        self.playNext()
+        await ctx.message.channel.send("Now playing: " +
+                                       self.queue[self.currSong + 1])
 
     @commands.command()
     async def prev(self, ctx):
+        self.adjustQueue()
         self.voiceClient.stop()
-        self.playPrevious()
-
-    @commands.command()
-    async def previous(self, ctx):
-        self.prev(self, ctx)
+        await ctx.message.channel.send("Now playing: " +
+                                       self.queue[self.currSong + 1])
 
     @commands.command()
     async def stop(self, ctx):
         self.queue.clear()
-        self.previousQueue.clear()
         self.voiceClient.stop()
 
     @commands.command()
     async def currentSong(self, ctx):
-        await ctx.message.channel.send(self.currSong)
+        # TODO: In addition to the currSong, maybe grab additional metadata from the file for display
+        await ctx.message.channel.send("Now playing: " +
+                                       self.queue[self.currSong])

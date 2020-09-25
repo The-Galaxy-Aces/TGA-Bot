@@ -2,6 +2,8 @@ import discord
 import discord.ext
 import logging
 import json
+import os
+from os import path
 from time import localtime, strftime, sleep
 
 from bot.features.insult import Insult
@@ -26,8 +28,10 @@ class Bot(discord.ext.commands.Bot):
         self.log = logging.getLogger(name + 'Logger')
         # TODO make the logging level configurable at init
         self.log.setLevel(logging.DEBUG)
+        if not path.exists("logs"):
+            os.mkdir("logs")
         self.handler = logging.FileHandler(
-            filename='discordBot-' + name + "-" +
+            filename='logs/discordBot-' + name + "-" +
             strftime("%Y-%m-%d", localtime()) + ".log")
         self.handler.setFormatter(
             logging.Formatter(
