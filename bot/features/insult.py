@@ -21,6 +21,8 @@ class Insult(commands.Cog):
         self.uri = "https://evilinsult.com/generate_insult.php?lang=en&type=json"
         self.myInsult = ""
 
+        self.tormentList = []
+
     def generateInsult(self):
         resp = requests.get(self.uri)
         if resp.status_code == 200:
@@ -40,6 +42,9 @@ class Insult(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         '''on_message left as an example for how to call it'''
+        for x in self.tormentList:
+            if x == message.author.mention:
+                await message.channel.send(x + self.getInsult())
         return
 
     @commands.command()
@@ -50,3 +55,9 @@ class Insult(commands.Cog):
             for mention in ctx.message.mentions:
                 await ctx.message.channel.send(mention.mention +
                                                self.getInsult())
+
+    @commands.command()
+    async def torment(self, ctx):
+        for mention in ctx.message.mentions:
+            if mention.mention not in self.tormentList:
+                self.tormentList.append(mention.mention)
