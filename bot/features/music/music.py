@@ -4,6 +4,7 @@ import discord
 import os
 import fnmatch
 import random
+import audio_metadata
 from discord.ext import commands
 
 
@@ -87,21 +88,31 @@ class Music(commands.Cog):
             self.voiceClient.stop()
 
         self.playNext()
-        await ctx.message.channel.send("Now playing: " +
-                                       self.queue[self.currSong])
+        await ctx.message.channel.send(
+            "Now playing: " + self.getSongMetadata(self.queue[self.currSong]))
+
+    def getSongMetadata(self, song):
+        md = audio_metadata.load(song)
+        artist = md["tags"]["albumartist"]
+        if not artist:
+            artist = md["tags"]["artist"]
+        title = md["tags"]["title"]
+        album = md["tags"]["album"]
+
+        return title[0] + " by: " + artist[0] + " from: " + album[0] + "."
 
     @commands.command()
     async def next(self, ctx):
         self.voiceClient.stop()
-        await ctx.message.channel.send("Now playing: " +
-                                       self.queue[self.currSong + 1])
+        await ctx.message.channel.send(
+            "Now playing: " + self.getSongMetadata(self.queue[self.currSong]))
 
     @commands.command()
     async def prev(self, ctx):
         self.adjustQueue()
         self.voiceClient.stop()
-        await ctx.message.channel.send("Now playing: " +
-                                       self.queue[self.currSong + 1])
+        await ctx.message.channel.send(
+            "Now playing: " + self.getSongMetadata(self.queue[self.currSong]))
 
     @commands.command()
     async def stop(self, ctx):
@@ -110,6 +121,7 @@ class Music(commands.Cog):
 
     @commands.command()
     async def currentSong(self, ctx):
-        # TODO: In addition to the currSong, maybe grab additional metadata from the file for display
-        await ctx.message.channel.send("Now playing: " +
-                                       self.queue[self.currSong])
+        if len(self.queue) > 0 and self.currSong < len(self.queue):
+            await ctx.message.channel.send(
+                "Now playing: " +
+                self.getSongMetadata(self.queue[self.currSong]))
