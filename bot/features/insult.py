@@ -44,7 +44,8 @@ class Insult(commands.Cog):
         '''on_message left as an example for how to call it'''
         for theTormented in self.tormentList:
             if theTormented == message.author.mention:
-                await message.channel.send(theTormented + self.getInsult())
+                await message.channel.send(theTormented + " " +
+                                           self.getInsult())
         return
 
     @commands.command()
