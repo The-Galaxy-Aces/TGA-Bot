@@ -61,3 +61,8 @@ class Insult(commands.Cog):
         for mention in ctx.message.mentions:
             if mention.mention not in self.tormentList:
                 self.tormentList.append(mention.mention)
+
+    @commands.command()
+    async def untorment(self, ctx):
+        for mention in ctx.message.mentions:
+            self.tormentList.remove(mention.mention)
