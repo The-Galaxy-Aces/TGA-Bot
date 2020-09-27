@@ -41,12 +41,9 @@ class Insult(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        '''on_message left as an example for how to call it'''
-        for theTormented in self.tormentList:
-            if theTormented == message.author.mention:
-                await message.channel.send(theTormented + " " +
-                                           self.getInsult())
-        return
+        for tormented in self.tormentList:
+            if tormented == message.author.mention:
+                await message.channel.send(f"{tormented} {self.getInsult()}")
 
     @commands.command()
     async def insult(self, ctx):
@@ -54,8 +51,8 @@ class Insult(commands.Cog):
             return
         else:
             for mention in ctx.message.mentions:
-                await ctx.message.channel.send(mention.mention +
-                                               self.getInsult())
+                await ctx.message.channel.send(
+                    f"{mention.mention} {self.getInsult()}")
 
     @commands.command()
     async def torment(self, ctx):
