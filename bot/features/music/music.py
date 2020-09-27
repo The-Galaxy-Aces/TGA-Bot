@@ -18,7 +18,7 @@ class Music(commands.Cog):
         self._last_member = None
         self.queue = []
         self.voiceClient = ""
-        self.localPath = "/music"
+        self.localPath = bot.enabled_features['music']['localPath']
         self.currSong = 0
 
     def playNext(self):
@@ -96,23 +96,31 @@ class Music(commands.Cog):
 
         self.playNext()
         await ctx.message.channel.send(
-            "Now playing: " + self.getSongMetadata(self.queue[self.currSong]))
+            f"Now playing: {self.getSongMetadata(self.queue[self.currSong])}")
 
     def getSongMetadata(self, song):
-        md = audio_metadata.load(song)
-        artist = md["tags"]["albumartist"]
-        if not artist:
-            artist = md["tags"]["artist"]
-        title = md["tags"]["title"]
-        album = md["tags"]["album"]
+        try:
+            md = audio_metadata.load(song)
+            artist = md["tags"]["albumartist"]
+            if not artist:
+                artist = md["tags"]["artist"]
+            title = md["tags"]["title"]
+            album = md["tags"]["album"]
+        except Exception as e:
+            print(f"ERROR: on song {song}: {e}")
+            return (f"Sorry, {song} has some invalid metadata.")
 
-        return title[0] + " by: " + artist[0] + " from: " + album[0] + "."
+        return f"{title[0]} by: {artist[0]} from: {album[0]}."
 
     @commands.command()
     async def next(self, ctx):
         self.voiceClient.stop()
+
+    @next.after_invoke
+    async def after_next(self, ctx):
         await ctx.message.channel.send(
-            "Now playing: " + self.getSongMetadata(self.queue[self.currSong]))
+            "Now playing: " +
+            self.getSongMetadata(self.queue[self.currSong + 1]))
 
     @commands.command()
     async def prev(self, ctx):
@@ -131,5 +139,5 @@ class Music(commands.Cog):
     async def currentSong(self, ctx):
         if len(self.queue) > 0 and self.currSong < len(self.queue):
             await ctx.message.channel.send(
-                "Now playing: " +
-                self.getSongMetadata(self.queue[self.currSong]))
+                f"Now playing: {self.getSongMetadata(self.queue[self.currSong])}"
+            )
