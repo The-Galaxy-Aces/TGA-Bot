@@ -23,13 +23,6 @@ class Music(commands.Cog):
 
     def playNext(self):
 
-        print("Current queue")
-        for x in self.queue:
-            if x == self.queue[self.currSong]:
-                print("\t" + x + " <<<<<<<<<")
-            else:
-                print("\t" + x)
-
         if len(self.queue) > 0 and self.currSong < len(self.queue):
             self.voiceClient.play(discord.FFmpegPCMAudio(
                 self.queue[self.currSong]),
@@ -78,8 +71,8 @@ class Music(commands.Cog):
 
         if len(newQueue) == 0:
             await ctx.message.channel.send(
-                "Sorry, I couldn't find any music which matches your search critera: "
-                + ' '.join(args))
+                f"Sorry, I couldn't find any music which matches your search critera: {' '.join(args)}"
+            )
             return
 
         self.queue = newQueue
@@ -119,15 +112,15 @@ class Music(commands.Cog):
     @next.after_invoke
     async def after_next(self, ctx):
         await ctx.message.channel.send(
-            "Now playing: " +
-            self.getSongMetadata(self.queue[self.currSong + 1]))
+            f"Now playing: {self.getSongMetadata(self.queue[self.currSong + 1])}"
+        )
 
     @commands.command()
     async def prev(self, ctx):
         self.adjustQueue()
         self.voiceClient.stop()
         await ctx.message.channel.send(
-            "Now playing: " + self.getSongMetadata(self.queue[self.currSong]))
+            f"Now playing: {self.getSongMetadata(self.queue[self.currSong])}")
 
     @commands.command()
     async def stop(self, ctx):
