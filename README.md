@@ -8,6 +8,10 @@ Copy the following json to a file named "config.json" to the base directory and 
 {
   "bot_name": "Your Bot Name",
   "token": "Your Discord API Key",
+  "logging": {
+    "enabled": "True",
+    "logging_level": "DEBUG"
+  },
   "enabled_features": {
     "insult": {
       "enabled": "True"
