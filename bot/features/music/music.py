@@ -119,8 +119,12 @@ class Music(commands.Cog):
     async def prev(self, ctx):
         self.adjustQueue()
         self.voiceClient.stop()
+
+    @prev.after_invoke
+    async def after_prev(self, ctx):
         await ctx.message.channel.send(
-            f"Now playing: {self.getSongMetadata(self.queue[self.currSong])}")
+            f"Now playing: {self.getSongMetadata(self.queue[self.currSong + 1])}"
+        )
 
     @commands.command()
     async def stop(self, ctx):
