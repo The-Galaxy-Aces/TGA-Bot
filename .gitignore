@@ -139,5 +139,6 @@ cython_debug/
 
 # Custom settings
 config.json
+config.yaml
 discord.log
 venv

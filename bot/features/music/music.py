@@ -1,10 +1,11 @@
-import requests
-import html
 import discord
 import os
 import fnmatch
 import random
 import audio_metadata
+import threading
+from time import sleep
+import pathlib
 from discord.ext import commands
 
 
@@ -19,11 +20,49 @@ class Music(commands.Cog):
         self.queue = []
         self.voiceClient = ""
         self.localPath = bot.enabled_features['music']['localPath']
+        self.audioTypes = [".flac", ".mp3", ".mp4", ".ogg", ".wav", ".wma"]
         self.currSong = 0
         self.currVolume = 1.0
 
+        self.searchPattern = ""
+
+        self.localLibrary = {}
+
+        self.processConfig()
+
+        self.searchThread = threading.Thread(target=self.searchingThread,
+                                             daemon=True)
+
+        self.searchThread.start()
+
+    def searchingThread(self):
+        while (True):
+
+            self.localLibrary = []
+            rootdir = self.localPath
+            rootdir = rootdir.rstrip(os.sep)
+            start = rootdir.rfind(os.sep) + 1
+            for path, dirs, files in os.walk(rootdir):
+                folders = path[start:].split(os.sep)
+                filterdFiles = [
+                    f"{path}/{file}" for file in files
+                    if pathlib.Path(file).suffix in self.audioTypes
+                ]
+                self.localLibrary += filterdFiles
+
+            sleep(20)
+
+    def searchLibrary(self, pattern):
+
+        newQueue = []
+
+        for song in self.localLibrary:
+            if fnmatch.fnmatch(f"{song}", f"*{pattern}*"):
+                newQueue.append(song)
+        return newQueue
+
     def playNext(self):
-        if len(self.queue) > 0 and self.currSong < len(self.queue):
+        if self.currSong >= 0 and self.currSong < len(self.queue):
             self.voiceClient.play(discord.PCMVolumeTransformer(
                 discord.FFmpegPCMAudio(self.queue[self.currSong]),
                 self.currVolume),
@@ -32,11 +71,13 @@ class Music(commands.Cog):
         else:
             self.voiceClient.stop()
 
+    def processConfig(self):
+        '''
+        # TODO: Process the config
+        '''
+
     def adjustQueue(self):
         self.currSong -= 2
-
-    # TODO: If using a local library for music, load all the local music into
-    # A database so that we can quickly search and find music to play
 
     def finishedSong(self):
         self.currSong += 1
@@ -59,19 +100,7 @@ class Music(commands.Cog):
             )))
             return
 
-        # TODO: Major cleanup of the searching
-        for root, dirs, files in os.walk(self.localPath):
-            for dir in dirs:
-                if fnmatch.fnmatch(dir, "*" + ' '.join(args) + "*"):
-                    for root2, dirs2, files2 in os.walk(root + "/" + dir):
-                        for file in files2:
-                            if file.endswith('.mp3') or file.endswith(
-                                    '.mp4'
-                            ) or file.endswith('.flac') or file.endswith(
-                                    '.ogg') or file.endswith(
-                                        '.m4a') or file.endswith(
-                                            '.wav') or file.endswith('.wma'):
-                                newQueue.append(root2 + "/" + file)
+        newQueue = self.searchLibrary(' '.join(args))
 
         if len(newQueue) == 0:
             await ctx.message.channel.send(
@@ -83,8 +112,8 @@ class Music(commands.Cog):
 
         random.shuffle(self.queue)
 
-        if type(self.voiceClient) is str or not self.voiceClient.is_connected(
-        ):
+        if isinstance(self.voiceClient,
+                      str) or not self.voiceClient.is_connected():
             channel = ctx.guild.get_channel(
                 ctx.message.author.voice.channel.id)
             self.voiceClient = await channel.connect()
@@ -122,7 +151,7 @@ class Music(commands.Cog):
 
     @commands.command()
     async def currentSong(self, ctx):
-        if len(self.queue) > 0 and self.currSong < len(self.queue):
+        if self.currSong >= 0 and self.currSong < len(self.queue):
             await ctx.message.channel.send(
                 f"Now playing: {getSongMetadata(self.queue[self.currSong])}")
 

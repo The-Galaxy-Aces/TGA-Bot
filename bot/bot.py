@@ -52,14 +52,14 @@ class Bot(discord.ext.commands.Bot):
             self.handler.setFormatter(logging.Formatter(FORMAT))
             self.log.addHandler(self.handler)
 
-            self.log.info("Bot initalized")
-
         print("Enabled features:")
         for x in self.enabled_features:
             if self.enabled_features[x]["enabled"] == "True":
                 self.add_cog(eval(x.capitalize())(self))
                 print(f'\t{x}')
         print("")
+
+        self.log.info("Bot initalized")
 
     def listEnabledFeatures(self):
         print("Enabled features:")
