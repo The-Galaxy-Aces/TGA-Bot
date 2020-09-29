@@ -99,6 +99,14 @@ class Music(commands.Cog):
             )
             return
 
+        try:
+            await ctx.bot.fetch_channel(ctx.message.author.voice.channel.id)
+        except:
+            await ctx.message.channel.send(
+                f"{ctx.message.author.mention} I do not have access to join the channel: {ctx.message.author.voice.channel}."
+            )
+            return
+
         if len(args) == 0:
             await ctx.send('\n'.join((
                 "To play music, search for an artist, album, or song using:",
