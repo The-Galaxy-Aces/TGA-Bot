@@ -2,7 +2,7 @@
 
 if [ ! -d "venv" ]; then
     echo Creating Virtual Environment
-    virtualenv venv
+    virtualenv -p python3 venv
 fi
 
 source venv/bin/activate
