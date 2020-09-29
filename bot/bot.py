@@ -3,6 +3,7 @@ import json
 import logging
 import discord
 import discord.ext
+import yaml
 from time import localtime, strftime, sleep
 
 from bot.features.insult import Insult
@@ -13,30 +14,24 @@ class Bot(discord.ext.commands.Bot):
     The Bot class.
     The bot can do lots of neat things
     """
-
-    def __init__(self, config_file):
-        command_prefix = "!"
-        super().__init__(command_prefix)
-
-        # Check for config file
-        if not os.path.exists(config_file):
-            raise OSError(f"{config_file} not found or missing")
-
-        # Read in config file
-        with open(config_file, 'r') as config_json:
-            CONFIG = json.load(config_json)
+    def __init__(self, CONFIG):
 
         # Check bot for minimal required params to make bot run properly
-        REQUIRED_PARAMS = ['bot_name', 'token']
-        MISSING_PARAMS = [param for param in REQUIRED_PARAMS if not CONFIG.get(param)]
+        REQUIRED_PARAMS = ['bot_name', 'token', 'command_prefix']
+        MISSING_PARAMS = [
+            param for param in REQUIRED_PARAMS if not CONFIG.get(param)
+        ]
         if MISSING_PARAMS:
-            raise AssertionError(f"config.json missing {MISSING_PARAMS}")
+            raise AssertionError(f"config.yaml missing {MISSING_PARAMS}")
 
         # Pull information out of parsed config file
         self.name = CONFIG.get('bot_name')
         self.token = CONFIG.get('token')
+        self.command_prefix = CONFIG.get('command_prefix')
         self.enabled_features = CONFIG.get('enabled_features')
         self.logging = CONFIG.get('logging')
+
+        super().__init__(self.command_prefix)
 
         # Logging setup
         if bool(self.logging['enabled']):
@@ -57,10 +52,10 @@ class Bot(discord.ext.commands.Bot):
         self.add_cog(Insult(self))
 
     def listEnabledFeatures(self):
-        print("Enabled features:")
+        print(f"{self.name} Enabled Features:")
         for enabled_feature in self.enabled_features:
             if bool(self.enabled_features[enabled_feature]["enabled"]):
-                print(f"{enabled_feature}")
+                print(f"\t{enabled_feature}")
         print()
 
     def get_token(self):
