@@ -20,12 +20,13 @@ class Music(commands.Cog):
         self.voiceClient = ""
         self.localPath = bot.enabled_features['music']['localPath']
         self.currSong = 0
+        self.currVolume = 1.0
 
     def playNext(self):
-
         if len(self.queue) > 0 and self.currSong < len(self.queue):
-            self.voiceClient.play(discord.FFmpegPCMAudio(
-                self.queue[self.currSong]),
+            self.voiceClient.play(discord.PCMVolumeTransformer(
+                discord.FFmpegPCMAudio(self.queue[self.currSong]),
+                self.currVolume),
                                   after=lambda e: self.finishedSong())
             self.voiceClient.is_playing()
         else:
@@ -51,8 +52,11 @@ class Music(commands.Cog):
         newQueue = []
 
         if len(args) == 0:
-            await ctx.send(
-                "To play music, search for an album using:\n!music ALBUM_NAME")
+            await ctx.send('\n'.join((
+                "To play music, search for an artist, album, or song using:",
+                f"{self.bot.command_prefix}music search criteria",
+                f"Example: {self.bot.command_prefix}music Sgt. Pepper's Lonely Hearts Club Band"
+            )))
             return
 
         # TODO: Major cleanup of the searching
@@ -89,21 +93,7 @@ class Music(commands.Cog):
 
         self.playNext()
         await ctx.message.channel.send(
-            f"Now playing: {self.getSongMetadata(self.queue[self.currSong])}")
-
-    def getSongMetadata(self, song):
-        try:
-            md = audio_metadata.load(song)
-            artist = md["tags"]["albumartist"]
-            if not artist:
-                artist = md["tags"]["artist"]
-            title = md["tags"]["title"]
-            album = md["tags"]["album"]
-        except Exception as e:
-            print(f"ERROR: on song {song}: {e}")
-            return (f"Sorry, {song} has some invalid metadata.")
-
-        return f"{title[0]} by: {artist[0]} from: {album[0]}."
+            f"Now playing: {getSongMetadata(self.queue[self.currSong])}")
 
     @commands.command()
     async def next(self, ctx):
@@ -112,8 +102,7 @@ class Music(commands.Cog):
     @next.after_invoke
     async def after_next(self, ctx):
         await ctx.message.channel.send(
-            f"Now playing: {self.getSongMetadata(self.queue[self.currSong + 1])}"
-        )
+            f"Now playing: {getSongMetadata(self.queue[self.currSong + 1])}")
 
     @commands.command()
     async def prev(self, ctx):
@@ -123,8 +112,7 @@ class Music(commands.Cog):
     @prev.after_invoke
     async def after_prev(self, ctx):
         await ctx.message.channel.send(
-            f"Now playing: {self.getSongMetadata(self.queue[self.currSong + 1])}"
-        )
+            f"Now playing: {getSongMetadata(self.queue[self.currSong + 1])}")
 
     @commands.command()
     async def stop(self, ctx):
@@ -136,5 +124,31 @@ class Music(commands.Cog):
     async def currentSong(self, ctx):
         if len(self.queue) > 0 and self.currSong < len(self.queue):
             await ctx.message.channel.send(
-                f"Now playing: {self.getSongMetadata(self.queue[self.currSong])}"
-            )
+                f"Now playing: {getSongMetadata(self.queue[self.currSong])}")
+
+    @commands.command()
+    async def volume(self, ctx, args):
+        try:
+            myVolume = int(args)
+            if myVolume >= 0 and myVolume <= 100:
+                self.voiceClient.source.volume = self.currVolume = myVolume / 100
+            else:
+                raise Exception("Invalid Value")
+        except Exception:
+            await ctx.message.channel.send(
+                f"For volume please enter a value between 0 and 100.")
+
+
+def getSongMetadata(song):
+    try:
+        md = audio_metadata.load(song)
+        artist = md["tags"]["albumartist"]
+        if not artist:
+            artist = md["tags"]["artist"]
+        title = md["tags"]["title"]
+        album = md["tags"]["album"]
+    except Exception as e:
+        print(f"ERROR: on song {song}: {e}")
+        return (f"Sorry, {song} has some invalid metadata.")
+
+    return f"{title[0]} by: {artist[0]} from: {album[0]}."
