@@ -3,7 +3,6 @@ import json
 import logging
 import discord
 import discord.ext
-import yaml
 from time import localtime, strftime, sleep
 
 from bot.features.insult import Insult
