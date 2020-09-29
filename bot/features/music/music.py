@@ -73,7 +73,7 @@ class Music(commands.Cog):
 
     def processConfig(self):
         '''
-        # TODO: Process the config
+        # TODO: Process the config (once merged with the threaded bots branch)
         '''
 
     def adjustQueue(self):
@@ -91,6 +91,13 @@ class Music(commands.Cog):
     async def music(self, ctx, *args):
 
         newQueue = []
+
+        if ctx.message.author.voice is None:
+
+            await ctx.message.channel.send(
+                f"{ctx.message.author.mention} you need to join a voice channel in order to listen to music."
+            )
+            return
 
         if len(args) == 0:
             await ctx.send('\n'.join((
@@ -112,13 +119,19 @@ class Music(commands.Cog):
 
         random.shuffle(self.queue)
 
-        if isinstance(self.voiceClient,
-                      str) or not self.voiceClient.is_connected():
-            channel = ctx.guild.get_channel(
-                ctx.message.author.voice.channel.id)
-            self.voiceClient = await channel.connect()
-        else:
-            self.voiceClient.stop()
+        try:
+            if isinstance(self.voiceClient,
+                          str) or not self.voiceClient.is_connected():
+                channel = ctx.guild.get_channel(
+                    ctx.message.author.voice.channel.id)
+                self.voiceClient = await channel.connect()
+            else:
+                self.voiceClient.stop()
+        except AttributeError:
+            await ctx.message.channel.send(
+                "You need to join a voice channel in order to listen to music."
+            )
+            return
 
         self.playNext()
         await ctx.message.channel.send(
@@ -148,6 +161,11 @@ class Music(commands.Cog):
         self.queue.clear()
         self.currSong = 0
         self.voiceClient.stop()
+        await self.voiceClient.disconnect()
+
+    @commands.command()
+    async def pause(self, ctx):
+        '''TODO: Pause the audio stream and then resume it later.'''
 
     @commands.command()
     async def currentSong(self, ctx):
