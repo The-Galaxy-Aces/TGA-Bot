@@ -39,6 +39,14 @@ class Music(commands.Cog):
 
     def processConfig(self):
         self.CONFIG = self.bot.enabled_features['music']
+
+        REQUIRED_PARAMS = ['local_path', 'audio_types', 'search_frequency']
+        MISSING_PARAMS = [
+            param for param in REQUIRED_PARAMS if not self.CONFIG.get(param)
+        ]
+        if MISSING_PARAMS:
+            raise AssertionError(f"config.yaml missing {MISSING_PARAMS}")
+
         self.localPath = self.CONFIG['local_path']
         self.audioTypes = self.CONFIG['audio_types']
         self.searchFrequency = self.CONFIG['search_frequency']  # In seconds

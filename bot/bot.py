@@ -46,7 +46,7 @@ class Bot(discord.ext.commands.Bot):
 
         print("Enabled features:")
         for x in self.enabled_features:
-            if self.enabled_features[x]["enabled"] == True:
+            if self.enabled_features[x]["enabled"]:
                 self.add_cog(eval(x.capitalize())(self))
                 print(f'\t{x}')
         print("")
