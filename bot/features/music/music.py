@@ -50,7 +50,7 @@ class Music(commands.Cog):
         https://discordpy.readthedocs.io/en/latest/ext/tasks/index.html
         '''
         while (True):
-            self.bot.log.debug(f"searchingThread Executing")
+            self.bot.log.debug("searchingThread Executing")
 
             self.localLibrary = []
             rootdir = self.localPath
@@ -119,7 +119,7 @@ class Music(commands.Cog):
 
         try:
             await ctx.bot.fetch_channel(ctx.message.author.voice.channel.id)
-        except:
+        except Exception:
             await ctx.message.channel.send(
                 f"```{ctx.message.author.mention} I do not have permissions to join the channel: {ctx.message.author.voice.channel}.```"
             )
@@ -185,7 +185,7 @@ class Music(commands.Cog):
                 ```{sep.join(queueString)}```
                 ''')
         else:
-            await ctx.message.channel.send(f'''
+            await ctx.message.channel.send('''
                 ```The music queue is currently empty.```
                 ''')
 
@@ -219,7 +219,7 @@ class Music(commands.Cog):
             self.didPrevExecute = True
         else:
             await ctx.message.channel.send(
-                f"```You're already at the beginning of the queue.```")
+                "```You're already at the beginning of the queue.```")
 
     @prev.after_invoke
     async def after_prev(self, ctx):
@@ -289,7 +289,7 @@ class Music(commands.Cog):
         if ctx.message.author.voice is None:
 
             await ctx.message.channel.send(
-                f"```You need to join a voice channel in order to listen to music.```"
+                "```You need to join a voice channel in order to listen to music.```"
             )
             return
 
@@ -308,7 +308,7 @@ class Music(commands.Cog):
             await self.voiceClient.move_to(channel)
         else:
             await ctx.message.channel.send(
-                f"```I need to be playing music in order to come to your channel.```"
+                "```I need to be playing music in order to come to your channel.```"
             )
 
 
