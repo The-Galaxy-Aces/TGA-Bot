@@ -2,6 +2,7 @@ import os
 import threading
 import asyncio
 import yaml
+import sys
 from bot.bot import Bot
 
 
@@ -16,6 +17,10 @@ def loopTheBot(loop):
 
 def main():
 
+    if sys.version_info[0] == 3 and sys.version_info[
+            1] >= 8 and sys.platform.startswith('win'):
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
     config_file = "config.yaml"
 
     # Check for config file
@@ -27,9 +32,6 @@ def main():
         CONFIG = yaml.full_load(config_yaml)
 
     for botConfig in CONFIG["bots"]:
-    if sys.version_info[0]==3 and sys.version_info[1] >= 8 and sys.platform.startswith('win'):
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    else:
         asyncio.get_child_watcher()
         loop = asyncio.get_event_loop()
 
