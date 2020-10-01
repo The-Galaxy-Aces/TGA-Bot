@@ -10,47 +10,64 @@ from discord.ext import commands
 
 
 class Music(commands.Cog):
-    """The Music class
+    """
     Sit back and enjoy some chill tunes
     """
     def __init__(self, bot):
 
+        # Required for the bot:
         self.bot = bot
         self._last_member = None
-        self.queue = []
+
+        # Used for music playback and functions
+        self.currQueue = []
         self.voiceClient = ""
-        self.localPath = bot.enabled_features['music']['localPath']
-        self.audioTypes = [".flac", ".mp3", ".mp4", ".ogg", ".wav", ".wma"]
         self.currSong = 0
         self.currVolume = 1.0
-
+        self.didPrevExecute = False
         self.searchPattern = ""
-
         self.localLibrary = {}
 
+        # TODO, the below values will eventually be populated from the
+        # config.yaml in the processConfig() method
+        self.localPath = bot.enabled_features['music']['localPath']
+        self.audioTypes = [".flac", ".mp3", ".mp4", ".ogg", ".wav", ".wma"]
+        self.searchFrequency = 300  # In seconds
         self.processConfig()
 
-        self.searchThread = threading.Thread(target=self.searchingThread,
-                                             daemon=True)
-
-        self.searchThread.start()
+        # Only create the thread to search the local library if it is enabled
+        if self.localPath:
+            self.searchThread = threading.Thread(target=self.searchingThread,
+                                                 daemon=True)
+            self.searchThread.start()
 
     def searchingThread(self):
+        '''
+        searchingThread is spawned as a seperate daemon thread from the main process
+        It executes its search every self.searchFrequency seconds in order to update
+        the music library as it is changed.
+        # TODO this can probably be refactored with discord.py tasks:
+        https://discordpy.readthedocs.io/en/latest/ext/tasks/index.html
+        '''
         while (True):
+            self.bot.log.debug(f"searchingThread Executing")
 
             self.localLibrary = []
             rootdir = self.localPath
             rootdir = rootdir.rstrip(os.sep)
-            start = rootdir.rfind(os.sep) + 1
-            for path, dirs, files in os.walk(rootdir):
-                folders = path[start:].split(os.sep)
+            #start = rootdir.rfind(os.sep) + 1
+            for path, _, files in os.walk(rootdir):
+                #folders = path[start:].split(os.sep)
                 filterdFiles = [
                     f"{path}/{file}" for file in files
                     if pathlib.Path(file).suffix in self.audioTypes
                 ]
                 self.localLibrary += filterdFiles
 
-            sleep(20)
+            self.bot.log.debug(
+                f"searchingThread Completed. Loaded {len(self.localLibrary)} songs."
+            )
+            sleep(self.searchFrequency)
 
     def searchLibrary(self, pattern):
 
@@ -62,9 +79,9 @@ class Music(commands.Cog):
         return newQueue
 
     def playNext(self):
-        if self.currSong >= 0 and self.currSong < len(self.queue):
+        if self.currSong >= 0 and self.currSong < len(self.currQueue):
             self.voiceClient.play(discord.PCMVolumeTransformer(
-                discord.FFmpegPCMAudio(self.queue[self.currSong]),
+                discord.FFmpegPCMAudio(self.currQueue[self.currSong]),
                 self.currVolume),
                                   after=lambda e: self.finishedSong())
             self.voiceClient.is_playing()
@@ -76,9 +93,6 @@ class Music(commands.Cog):
         # TODO: Process the config (once merged with the threaded bots branch)
         '''
 
-    def adjustQueue(self):
-        self.currSong -= 2
-
     def finishedSong(self):
         self.currSong += 1
         self.playNext()
@@ -89,13 +103,17 @@ class Music(commands.Cog):
 
     @commands.command()
     async def music(self, ctx, *args):
+        '''
+        Searches for an artist, album, or song and places
+        all the matches into the queue and starts playing.
+        '''
 
         newQueue = []
 
         if ctx.message.author.voice is None:
 
             await ctx.message.channel.send(
-                f"{ctx.message.author.mention} you need to join a voice channel in order to listen to music."
+                f"```{ctx.message.author.mention} you need to join a voice channel in order to listen to music.```"
             )
             return
 
@@ -103,15 +121,15 @@ class Music(commands.Cog):
             await ctx.bot.fetch_channel(ctx.message.author.voice.channel.id)
         except:
             await ctx.message.channel.send(
-                f"{ctx.message.author.mention} I do not have access to join the channel: {ctx.message.author.voice.channel}."
+                f"```{ctx.message.author.mention} I do not have permissions to join the channel: {ctx.message.author.voice.channel}.```"
             )
             return
 
         if len(args) == 0:
             await ctx.send('\n'.join((
-                "To play music, search for an artist, album, or song using:",
+                "```To play music, search for an artist, album, or song using:",
                 f"{self.bot.command_prefix}music search criteria",
-                f"Example: {self.bot.command_prefix}music Sgt. Pepper's Lonely Hearts Club Band"
+                f"Example: {self.bot.command_prefix}music Sgt. Pepper's Lonely Hearts Club Band```"
             )))
             return
 
@@ -119,13 +137,13 @@ class Music(commands.Cog):
 
         if len(newQueue) == 0:
             await ctx.message.channel.send(
-                f"Sorry, I couldn't find any music which matches your search critera: {' '.join(args)}"
+                f"```Sorry, I couldn't find any music which matches your search critera: {' '.join(args)}```"
             )
             return
 
-        self.queue = newQueue
+        self.currQueue = newQueue
 
-        random.shuffle(self.queue)
+        random.shuffle(self.currQueue)
 
         try:
             if isinstance(self.voiceClient,
@@ -137,52 +155,122 @@ class Music(commands.Cog):
                 self.voiceClient.stop()
         except AttributeError:
             await ctx.message.channel.send(
-                "You need to join a voice channel in order to listen to music."
+                "```You need to join a voice channel in order to listen to music.```"
             )
             return
 
         self.playNext()
         await ctx.message.channel.send(
-            f"Now playing: {getSongMetadata(self.queue[self.currSong])}")
+            f"```Now playing: {getSongMetadata(self.currQueue[self.currSong])}```"
+        )
+
+    @commands.command()
+    async def queue(self, ctx):
+        '''
+        Displays information about the current song queue.
+        '''
+        if self.currQueue:
+            queueString = []
+            queueString.append(
+                f"{f'Previous song: {getSongMetadata(self.currQueue[self.currSong-1])}' if self.currSong > 0 else ''}"
+            )
+            queueString.append(
+                f"{f'Current song: {getSongMetadata(self.currQueue[self.currSong])}' if self.currSong >= 0 else ''}"
+            )
+            queueString.append(
+                f"{f'Next song: {getSongMetadata(self.currQueue[self.currSong+1])}' if self.currSong + 1 < len(self.currQueue) else ''}"
+            )
+            sep = "\n"
+            await ctx.message.channel.send(f'''
+                ```{sep.join(queueString)}```
+                ''')
+        else:
+            await ctx.message.channel.send(f'''
+                ```The music queue is currently empty.```
+                ''')
 
     @commands.command()
     async def next(self, ctx):
+        '''
+        Plays the next song in the queue.
+        '''
         self.voiceClient.stop()
 
     @next.after_invoke
     async def after_next(self, ctx):
-        await ctx.message.channel.send(
-            f"Now playing: {getSongMetadata(self.queue[self.currSong + 1])}")
+        if self.currSong + 1 < len(self.currQueue):
+            await ctx.message.channel.send(
+                f"```Now playing: {getSongMetadata(self.currQueue[self.currSong + 1])}```"
+            )
+        else:
+            await self.voiceClient.disconnect()
+            await ctx.message.channel.send(
+                f"```Playback complete. Use the {self.bot.command_prefix}music command to search for and playback more music.```"
+            )
 
     @commands.command()
     async def prev(self, ctx):
-        self.adjustQueue()
-        self.voiceClient.stop()
+        '''
+        Plays the previous song in the queue.
+        '''
+        if self.currSong > 0:
+            self.currSong -= 2
+            self.voiceClient.stop()
+            self.didPrevExecute = True
+        else:
+            await ctx.message.channel.send(
+                f"```You're already at the beginning of the queue.```")
 
     @prev.after_invoke
     async def after_prev(self, ctx):
-        await ctx.message.channel.send(
-            f"Now playing: {getSongMetadata(self.queue[self.currSong + 1])}")
+        if self.didPrevExecute:
+            self.didPrevExecute = False
+            await ctx.message.channel.send(
+                f"```Now playing: {getSongMetadata(self.currQueue[self.currSong + 1])}```"
+            )
 
     @commands.command()
     async def stop(self, ctx):
-        self.queue.clear()
+        '''
+        Stop the audio stream and clear the music queue.
+        '''
+        self.currQueue.clear()
         self.currSong = 0
         self.voiceClient.stop()
         await self.voiceClient.disconnect()
 
     @commands.command()
     async def pause(self, ctx):
-        '''TODO: Pause the audio stream and then resume it later.'''
+        '''
+        Pauses the current song.
+        '''
+        if self.voiceClient.is_playing():
+            self.voiceClient.pause()
+
+    @commands.command()
+    async def resume(self, ctx):
+        '''
+        Resumes the current song.
+        '''
+        if self.voiceClient.is_paused():
+            self.voiceClient.resume()
 
     @commands.command()
     async def currentSong(self, ctx):
-        if self.currSong >= 0 and self.currSong < len(self.queue):
+        '''
+        Displays metadata for the current song.
+        '''
+        if self.currSong >= 0 and self.currSong < len(self.currQueue):
             await ctx.message.channel.send(
-                f"Now playing: {getSongMetadata(self.queue[self.currSong])}")
+                f"```Now playing: {getSongMetadata(self.currQueue[self.currSong])}```"
+            )
 
     @commands.command()
     async def volume(self, ctx, args):
+        '''
+        Adjusts the volume to the specified level.
+        Where <args> is an integer between 0 and 100
+        '''
         try:
             myVolume = int(args)
             if myVolume >= 0 and myVolume <= 100:
@@ -191,7 +279,37 @@ class Music(commands.Cog):
                 raise Exception("Invalid Value")
         except Exception:
             await ctx.message.channel.send(
-                f"For volume please enter a value between 0 and 100.")
+                "For volume please enter a value between 0 and 100.")
+
+    @commands.command()
+    async def come(self, ctx):
+        '''
+        Moves the bot to the your current voice channel.
+        '''
+        if ctx.message.author.voice is None:
+
+            await ctx.message.channel.send(
+                f"```You need to join a voice channel in order to listen to music.```"
+            )
+            return
+
+        try:
+            await ctx.bot.fetch_channel(ctx.message.author.voice.channel.id)
+        except:
+            await ctx.message.channel.send(
+                f"```I do not have access to join the channel: {ctx.message.author.voice.channel}.```"
+            )
+            return
+
+        if not isinstance(self.voiceClient,
+                          str) and self.voiceClient.is_playing():
+            channel = ctx.guild.get_channel(
+                ctx.message.author.voice.channel.id)
+            await self.voiceClient.move_to(channel)
+        else:
+            await ctx.message.channel.send(
+                f"```I need to be playing music in order to come to your channel.```"
+            )
 
 
 def getSongMetadata(song):
@@ -203,7 +321,7 @@ def getSongMetadata(song):
         title = md["tags"]["title"]
         album = md["tags"]["album"]
     except Exception as e:
-        print(f"ERROR: on song {song}: {e}")
-        return (f"Sorry, {song} has some invalid metadata.")
+        print(f"ERROR: {song} has invalid metadata: {e}")
+        return (f"{song.split(os.sep)[-1]} has invalid metadata.")
 
     return f"{title[0]} by: {artist[0]} from: {album[0]}."
