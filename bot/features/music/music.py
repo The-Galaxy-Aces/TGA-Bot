@@ -113,7 +113,7 @@ class Music(commands.Cog):
         if ctx.message.author.voice is None:
 
             await ctx.message.channel.send(
-                f"```You need to join a voice channel in order to listen to music.```"
+                "```You need to join a voice channel in order to listen to music.```"
             )
             return
 
@@ -295,7 +295,7 @@ class Music(commands.Cog):
 
         try:
             await ctx.bot.fetch_channel(ctx.message.author.voice.channel.id)
-        except:
+        except Exception:
             await ctx.message.channel.send(
                 f"```I do not have access to join the channel: {ctx.message.author.voice.channel}.```"
             )
