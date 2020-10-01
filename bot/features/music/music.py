@@ -84,7 +84,6 @@ class Music(commands.Cog):
                 discord.FFmpegPCMAudio(self.currQueue[self.currSong]),
                 self.currVolume),
                                   after=lambda e: self.finishedSong())
-            self.voiceClient.is_playing()
         else:
             self.voiceClient.stop()
 
@@ -141,9 +140,8 @@ class Music(commands.Cog):
             )
             return
 
-        self.currQueue = newQueue
-
-        random.shuffle(self.currQueue)
+        self.currQueue.clear()
+        self.currSong = 0
 
         try:
             if isinstance(self.voiceClient,
@@ -158,6 +156,10 @@ class Music(commands.Cog):
                 "```You need to join a voice channel in order to listen to music.```"
             )
             return
+
+        self.currQueue = newQueue
+
+        random.shuffle(self.currQueue)
 
         self.playNext()
         await ctx.message.channel.send(
