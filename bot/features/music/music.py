@@ -113,7 +113,7 @@ class Music(commands.Cog):
         if ctx.message.author.voice is None:
 
             await ctx.message.channel.send(
-                f"```{ctx.message.author.mention} you need to join a voice channel in order to listen to music.```"
+                f"```You need to join a voice channel in order to listen to music.```"
             )
             return
 
@@ -121,7 +121,7 @@ class Music(commands.Cog):
             await ctx.bot.fetch_channel(ctx.message.author.voice.channel.id)
         except Exception:
             await ctx.message.channel.send(
-                f"```{ctx.message.author.mention} I do not have permissions to join the channel: {ctx.message.author.voice.channel}.```"
+                f"```I do not have permissions to join the channel: {ctx.message.author.voice.channel}.```"
             )
             return
 
