@@ -31,3 +31,4 @@ EOF
 else
   echo "Your config.yaml already exists, skipping generation of example config.yaml."
 fi
+
