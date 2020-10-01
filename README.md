@@ -15,8 +15,7 @@ Modify the file with your bot parameters as such:
 
 ```yaml
 bots:
-  - bot_id: 1
-    config:
+  - config:
       bot_name: Your Bot Name
       token: Your Discord API Key
       command_prefix: "!"
@@ -46,8 +45,7 @@ It is also recommended but not required that each bot have a unique command pref
 
 ```yaml
 bots:
-  - bot_id: 1
-    config:
+  - config:
       bot_name: The Galaxy Aces Bot
       token: this_bots_token
       command_prefix: "!"
@@ -59,8 +57,7 @@ bots:
           enabled: "True"
           permissions:
             - everyone
-  - bot_id: 2
-    config:
+  - config:
       bot_name: The Galaxy Aces Other Bot
       token: this_bots_token
       command_prefix: "."

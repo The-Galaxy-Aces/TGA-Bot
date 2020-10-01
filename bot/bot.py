@@ -34,20 +34,19 @@ class Bot(discord.ext.commands.Bot):
         super().__init__(self.command_prefix)
 
         # Logging setup
-        if self.logging['enabled'] == "True":
-            FORMAT = "%(asctime)s:%(levelname)s:%(name)s: %(message)s"
-            DATE_STAMP = strftime("%Y-%m-%d", localtime())
-            FILE_NAME = f"discordBot-{self.name}-{DATE_STAMP}.log"
+        FORMAT = "%(asctime)s:%(levelname)s:%(name)s: %(message)s"
+        DATE_STAMP = strftime("%Y-%m-%d", localtime())
+        FILE_NAME = f"discordBot-{self.name}-{DATE_STAMP}.log"
 
-            self.log = logging.getLogger(f"{self.name} Logger")
-            self.log.setLevel(CONFIG['logging']['logging_level'])
-            self.handler = logging.FileHandler(filename=FILE_NAME)
-            self.handler.setFormatter(logging.Formatter(FORMAT))
-            self.log.addHandler(self.handler)
+        self.log = logging.getLogger(f"{self.name} Logger")
+        self.log.setLevel(CONFIG['logging']['logging_level'])
+        self.handler = logging.FileHandler(filename=FILE_NAME)
+        self.handler.setFormatter(logging.Formatter(FORMAT))
+        self.log.addHandler(self.handler)
 
         print("Enabled features:")
         for x in self.enabled_features:
-            if self.enabled_features[x]["enabled"] == "True":
+            if self.enabled_features[x]["enabled"] == True:
                 self.add_cog(eval(x.capitalize())(self))
                 print(f'\t{x}')
         print("")

@@ -29,11 +29,6 @@ class Music(commands.Cog):
         self.localLibrary = {}
         self.initalLock = True
 
-        # TODO, the below values will eventually be populated from the
-        # config.yaml in the processConfig() method
-        self.localPath = bot.enabled_features['music']['localPath']
-        self.audioTypes = [".flac", ".mp3", ".mp4", ".ogg", ".wav", ".wma"]
-        self.searchFrequency = 300  # In seconds
         self.processConfig()
 
         # Only create the thread to search the local library if it is enabled
@@ -41,6 +36,12 @@ class Music(commands.Cog):
             self.searchThread = threading.Thread(target=self.searchingThread,
                                                  daemon=True)
             self.searchThread.start()
+
+    def processConfig(self):
+        self.CONFIG = self.bot.enabled_features['music']
+        self.localPath = self.CONFIG['local_path']
+        self.audioTypes = self.CONFIG['audio_types']
+        self.searchFrequency = self.CONFIG['search_frequency']  # In seconds
 
     def searchingThread(self):
         '''
@@ -56,9 +57,7 @@ class Music(commands.Cog):
             self.localLibrary = []
             rootdir = self.localPath
             rootdir = rootdir.rstrip(os.sep)
-            #start = rootdir.rfind(os.sep) + 1
             for path, _, files in os.walk(rootdir):
-                #folders = path[start:].split(os.sep)
                 filterdFiles = [
                     f"{path}/{file}" for file in files
                     if pathlib.Path(file).suffix in self.audioTypes
@@ -96,11 +95,6 @@ class Music(commands.Cog):
                                   after=lambda e: self.finishedSong())
         else:
             self.voiceClient.stop()
-
-    def processConfig(self):
-        '''
-        # TODO: Process the config (once merged with the threaded bots branch)
-        '''
 
     def finishedSong(self):
         self.currSong += 1
