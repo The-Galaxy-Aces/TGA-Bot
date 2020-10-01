@@ -27,6 +27,7 @@ class Music(commands.Cog):
         self.didPrevExecute = False
         self.searchPattern = ""
         self.localLibrary = {}
+        self.initalLock = True
 
         # TODO, the below values will eventually be populated from the
         # config.yaml in the processConfig() method
@@ -67,6 +68,15 @@ class Music(commands.Cog):
             self.bot.log.debug(
                 f"searchingThread Completed. Loaded {len(self.localLibrary)} songs."
             )
+
+            # initalLock is used to lock the music function until the first search after
+            # starting the bot is completed. Otherwise searches would fail or return partial
+            # results until the initial search is completed.
+            # TODO maybe we can put something into a pre invoke method to populate the local
+            # library before the bot accepts music commands
+            if self.initalLock:
+                self.initalLock = False
+
             sleep(self.searchFrequency)
 
     def searchLibrary(self, pattern):
@@ -106,6 +116,12 @@ class Music(commands.Cog):
         Searches for an artist, album, or song and places
         all the matches into the queue and starts playing.
         '''
+
+        # Wait for the inital search to complete before trying to play music. This only occurs
+        # once immediately after the bot is started.
+        while self.initalLock:
+            self.bot.log.debug("Waiting for initalLock to unlock")
+            sleep(1)
 
         newQueue = []
 
