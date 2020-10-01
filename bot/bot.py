@@ -33,7 +33,7 @@ class Bot(discord.ext.commands.Bot):
         super().__init__(self.command_prefix)
 
         # Logging setup
-        if bool(self.logging['enabled']):
+        if self.logging['enabled'] == "True":
             FORMAT = "%(asctime)s:%(levelname)s:%(name)s: %(message)s"
             DATE_STAMP = strftime("%Y-%m-%d", localtime())
             FILE_NAME = f"discordBot-{self.name}-{DATE_STAMP}.log"
@@ -53,7 +53,7 @@ class Bot(discord.ext.commands.Bot):
     def listEnabledFeatures(self):
         print(f"{self.name} Enabled Features:")
         for enabled_feature in self.enabled_features:
-            if bool(self.enabled_features[enabled_feature]["enabled"]):
+            if self.enabled_features[enabled_feature]["enabled"] == "True":
                 print(f"\t{enabled_feature}")
         print()
 
