@@ -37,7 +37,7 @@ class Insult(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print("Insults are ready!")
+        print(f"{self.bot.name} insults are ready!")
 
     @commands.Cog.listener()
     async def on_message(self, message):
