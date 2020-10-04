@@ -15,7 +15,8 @@ Modify the file with your bot parameters as such:
 
 ```yaml
 bots:
-  - config:
+  - bot_id: 1
+    config:
       bot_name: Your Bot Name
       token: Your Discord API Key
       command_prefix: "!"
@@ -27,6 +28,19 @@ bots:
           enabled: "True"
           permissions:
             - everyone
+        music:
+          enabled: True
+          permissions:
+            - everyone
+          local_path: /music
+          search_frequency: 300
+          audio_types:
+            - .flac
+            - .mp3
+            - .mp4
+            - .ogg
+            - .wav
+            - .wmv
 ```
 
 ## Start the Bot
@@ -45,7 +59,8 @@ It is also recommended but not required that each bot have a unique command pref
 
 ```yaml
 bots:
-  - config:
+  - bot_id: 1
+    config:
       bot_name: The Galaxy Aces Bot
       token: this_bots_token
       command_prefix: "!"
@@ -57,9 +72,23 @@ bots:
           enabled: "True"
           permissions:
             - everyone
-  - config:
+        music:
+          enabled: True
+          permissions:
+            - everyone
+          local_path: /music
+          search_frequency: 300
+          audio_types:
+            - .flac
+            - .mp3
+            - .mp4
+            - .ogg
+            - .wav
+            - .wmv
+  - bot_id: 2
+    config:
       bot_name: The Galaxy Aces Other Bot
-      token: this_bots_token
+      token: this_other_bots_token
       command_prefix: "."
       logging:
         enabled: "True"
@@ -69,4 +98,17 @@ bots:
           enabled: "True"
           permissions:
             - everyone
+        music:
+          enabled: True
+          permissions:
+            - everyone
+          local_path: /music
+          search_frequency: 300
+          audio_types:
+            - .flac
+            - .mp3
+            - .mp4
+            - .ogg
+            - .wav
+            - .wmv
 ```
