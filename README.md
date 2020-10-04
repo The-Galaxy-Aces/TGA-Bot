@@ -21,11 +21,11 @@ bots:
       token: Your Discord API Key
       command_prefix: "!"
       logging:
-        enabled: "True"
+        enabled: True
         logging_level: DEBUG
       enabled_features:
         insult:
-          enabled: "True"
+          enabled: True
           permissions:
             - everyone
         music:
@@ -65,11 +65,11 @@ bots:
       token: this_bots_token
       command_prefix: "!"
       logging:
-        enabled: "True"
+        enabled: True
         logging_level: DEBUG
       enabled_features:
         insult:
-          enabled: "True"
+          enabled: True
           permissions:
             - everyone
         music:
@@ -91,11 +91,11 @@ bots:
       token: this_other_bots_token
       command_prefix: "."
       logging:
-        enabled: "True"
+        enabled: True
         logging_level: DEBUG
       enabled_features:
         insult:
-          enabled: "True"
+          enabled: True
           permissions:
             - everyone
         music:
