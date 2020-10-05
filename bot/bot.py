@@ -6,6 +6,7 @@ import discord.ext
 from time import localtime, strftime, sleep
 
 from bot.features.insult import Insult
+from bot.features.music.music import Music
 
 
 class Bot(discord.ext.commands.Bot):
@@ -33,22 +34,24 @@ class Bot(discord.ext.commands.Bot):
         super().__init__(self.command_prefix)
 
         # Logging setup
-        if self.logging['enabled'] == "True":
-            FORMAT = "%(asctime)s:%(levelname)s:%(name)s: %(message)s"
-            DATE_STAMP = strftime("%Y-%m-%d", localtime())
-            FILE_NAME = f"discordBot-{self.name}-{DATE_STAMP}.log"
+        FORMAT = "%(asctime)s:%(levelname)s:%(name)s: %(message)s"
+        DATE_STAMP = strftime("%Y-%m-%d", localtime())
+        FILE_NAME = f"discordBot-{self.name}-{DATE_STAMP}.log"
 
-            self.log = logging.getLogger(f"{self.name} Logger")
-            self.log.setLevel(CONFIG['logging']['logging_level'])
-            self.handler = logging.FileHandler(filename=FILE_NAME)
-            self.handler.setFormatter(logging.Formatter(FORMAT))
-            self.log.addHandler(self.handler)
+        self.log = logging.getLogger(f"{self.name} Logger")
+        self.log.setLevel(CONFIG['logging']['logging_level'])
+        self.handler = logging.FileHandler(filename=FILE_NAME)
+        self.handler.setFormatter(logging.Formatter(FORMAT))
+        self.log.addHandler(self.handler)
 
-            self.log.info("Bot initalized")
+        print("Enabled features:")
+        for x in self.enabled_features:
+            if self.enabled_features[x]["enabled"]:
+                self.add_cog(eval(x.capitalize())(self))
+                print(f'\t{x}')
+        print("")
 
-        # Features
-        self.listEnabledFeatures()
-        self.add_cog(Insult(self))
+        self.log.info("Bot initalized")
 
     def listEnabledFeatures(self):
         print(f"{self.name} Enabled Features:")

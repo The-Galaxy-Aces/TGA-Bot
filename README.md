@@ -21,13 +21,26 @@ bots:
       token: Your Discord API Key
       command_prefix: "!"
       logging:
-        enabled: "True"
+        enabled: True
         logging_level: DEBUG
       enabled_features:
         insult:
-          enabled: "True"
+          enabled: True
           permissions:
             - everyone
+        music:
+          enabled: True
+          permissions:
+            - everyone
+          local_path: /music
+          search_frequency: 300
+          audio_types:
+            - .flac
+            - .mp3
+            - .mp4
+            - .ogg
+            - .wav
+            - .wmv
 ```
 
 ## Start the Bot
@@ -52,24 +65,50 @@ bots:
       token: this_bots_token
       command_prefix: "!"
       logging:
-        enabled: "True"
+        enabled: True
         logging_level: DEBUG
       enabled_features:
         insult:
-          enabled: "True"
+          enabled: True
           permissions:
             - everyone
+        music:
+          enabled: True
+          permissions:
+            - everyone
+          local_path: /music
+          search_frequency: 300
+          audio_types:
+            - .flac
+            - .mp3
+            - .mp4
+            - .ogg
+            - .wav
+            - .wmv
   - bot_id: 2
     config:
       bot_name: The Galaxy Aces Other Bot
-      token: this_bots_token
+      token: this_other_bots_token
       command_prefix: "."
       logging:
-        enabled: "True"
+        enabled: True
         logging_level: DEBUG
       enabled_features:
         insult:
-          enabled: "True"
+          enabled: True
           permissions:
             - everyone
+        music:
+          enabled: True
+          permissions:
+            - everyone
+          local_path: /music
+          search_frequency: 300
+          audio_types:
+            - .flac
+            - .mp3
+            - .mp4
+            - .ogg
+            - .wav
+            - .wmv
 ```
