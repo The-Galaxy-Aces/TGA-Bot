@@ -17,6 +17,8 @@ class TGACog(commands.Cog):
 
     def enableCog(self):
         self.bot.log.debug(f"Enable Cog {self.__class__.__name__.lower()}")
+        self.bot.add_cog(self)
 
     def disableCog(self):
         self.bot.log.debug(f"Disable Cog {self.__class__.__name__.lower()}")
+        self.bot.remove_cog(self)

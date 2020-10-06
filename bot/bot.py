@@ -14,14 +14,15 @@ class Bot(discord.ext.commands.Bot):
     The Bot class.
     The bot can do lots of neat things
     """
-    def __init__(self, CONFIG):
+    def __init__(self, CONFIG, OSTYPE):
 
         self.CONFIG = CONFIG
+        self.OSTYPE = OSTYPE
         self.cogList = []
         self.FEATURES = ['Insult', 'Music']
 
         # Check bot for minimal required params to make bot run properly
-        REQUIRED_PARAMS = ['bot_name', 'token', 'command_prefix']
+        REQUIRED_PARAMS = ['bot_name', 'token', 'command_prefix', 'logging']
         MISSING_PARAMS = [
             param for param in REQUIRED_PARAMS if not CONFIG.get(param)
         ]
@@ -47,7 +48,12 @@ class Bot(discord.ext.commands.Bot):
     def setupLogging(self):
         # Logging setup
         try:
-            os.mkdir("logs")
+            if self.OSTYPE == "win":
+                logPath = "logs"
+            else:
+                logPath = f"{os.sep}var{os.sep}log{os.sep}discordbot"
+
+            os.mkdir(logPath)
         except FileExistsError:
             pass
         except Exception as e:
@@ -57,7 +63,7 @@ class Bot(discord.ext.commands.Bot):
 
         FORMAT = "%(asctime)s:%(levelname)s:%(name)s: %(message)s"
         DATE_STAMP = strftime("%Y-%m-%d", localtime())
-        FILE_NAME = f"logs{os.sep}discordBot-{self.name}-{DATE_STAMP}.log"
+        FILE_NAME = f"{logPath}{os.sep}discordBot-{self.name}-{DATE_STAMP}.log"
 
         self.log = logging.getLogger(f"{self.name} Logger")
         self.log.setLevel(self.CONFIG['logging']['logging_level'])
