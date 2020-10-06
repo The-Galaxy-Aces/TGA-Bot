@@ -6,6 +6,18 @@ import signal
 import sys
 from time import sleep
 from bot.bot import Bot
+from bot.tgacli import TGACli
+
+
+async def asyncInputLoop(func):
+    return await asyncio.coroutine(func)()
+
+
+def inputLoop(*args):
+
+    while (True):
+        cmd = input(">>> ")
+        print(cmd)
 
 
 async def threadedBot(bot):
@@ -49,13 +61,18 @@ def main():
         loop = asyncio.get_event_loop()
 
         bot = Bot(botConfig["config"], OSTYPE)
-        bots.append(bot)
         loop.create_task(threadedBot(bot))
 
         thread = threading.Thread(target=loopTheBot,
                                   args=(loop, ),
                                   daemon=True)
+        bot.thread = thread
+        bot.loop = loop
+        bots.append(bot)
         thread.start()
+
+    # Setup the cli in its own thread
+    cli = TGACli(bots, OSTYPE)
 
     # Properly handle the control+c
     signal.signal(signal.SIGINT, signal_handler)
@@ -66,8 +83,8 @@ def main():
     if OSTYPE == 'win':
         while (True):
             sleep(1)
-    else:
-        signal.pause()
+    # else:
+    # signal.pause()
 
 
 if __name__ == "__main__":

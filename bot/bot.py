@@ -20,6 +20,8 @@ class Bot(discord.ext.commands.Bot):
         self.OSTYPE = OSTYPE
         self.cogList = []
         self.FEATURES = ['Insult', 'Music']
+        self.thread = ""
+        self.loop = ""
 
         # Check bot for minimal required params to make bot run properly
         REQUIRED_PARAMS = ['bot_name', 'token', 'command_prefix', 'logging']
