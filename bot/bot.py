@@ -16,6 +16,10 @@ class Bot(discord.ext.commands.Bot):
     """
     def __init__(self, CONFIG):
 
+        self.CONFIG = CONFIG
+        self.cogList = []
+        self.FEATURES = ['Insult', 'Music']
+
         # Check bot for minimal required params to make bot run properly
         REQUIRED_PARAMS = ['bot_name', 'token', 'command_prefix']
         MISSING_PARAMS = [
@@ -33,32 +37,43 @@ class Bot(discord.ext.commands.Bot):
 
         super().__init__(self.command_prefix)
 
+        if self.logging:
+            self.setupLogging()
+
+        self.enableFeatures()
+
+        self.log.info("Bot initalized")
+
+    def setupLogging(self):
         # Logging setup
+        try:
+            os.mkdir("logs")
+        except FileExistsError:
+            pass
+        except Exception as e:
+            raise AssertionError(
+                f"logs directory was not able to be created for some reason: {e}"
+            )
+
         FORMAT = "%(asctime)s:%(levelname)s:%(name)s: %(message)s"
         DATE_STAMP = strftime("%Y-%m-%d", localtime())
-        FILE_NAME = f"discordBot-{self.name}-{DATE_STAMP}.log"
+        FILE_NAME = f"logs{os.sep}discordBot-{self.name}-{DATE_STAMP}.log"
 
         self.log = logging.getLogger(f"{self.name} Logger")
-        self.log.setLevel(CONFIG['logging']['logging_level'])
+        self.log.setLevel(self.CONFIG['logging']['logging_level'])
         self.handler = logging.FileHandler(filename=FILE_NAME)
         self.handler.setFormatter(logging.Formatter(FORMAT))
         self.log.addHandler(self.handler)
 
-        print("Enabled features:")
-        for x in self.enabled_features:
-            if self.enabled_features[x]["enabled"]:
-                self.add_cog(eval(x.capitalize())(self))
-                print(f'\t{x}')
+    def enableFeatures(self):
+        print(f"{self.name} enabled features:")
+        for feature in self.enabled_features:
+            if self.enabled_features[feature][
+                    "enabled"] and feature.capitalize() in self.FEATURES:
+                self.cogList.append(eval(feature.capitalize())(self))
+                self.cogList[-1].enableCog()
+                print(f'\t{feature}')
         print("")
-
-        self.log.info("Bot initalized")
-
-    def listEnabledFeatures(self):
-        print(f"{self.name} Enabled Features:")
-        for enabled_feature in self.enabled_features:
-            if self.enabled_features[enabled_feature]["enabled"] == "True":
-                print(f"\t{enabled_feature}")
-        print()
 
     def get_token(self):
         return self.token
