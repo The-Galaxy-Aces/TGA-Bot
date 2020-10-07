@@ -83,8 +83,8 @@ def main():
     if OSTYPE == 'win':
         while (True):
             sleep(1)
-    # else:
-    # signal.pause()
+    else:
+        signal.pause()
 
 
 if __name__ == "__main__":

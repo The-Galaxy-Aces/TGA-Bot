@@ -24,7 +24,9 @@ class Bot(discord.ext.commands.Bot):
         self.loop = ""
 
         # Check bot for minimal required params to make bot run properly
-        REQUIRED_PARAMS = ['bot_name', 'token', 'command_prefix', 'logging']
+        REQUIRED_PARAMS = [
+            'bot_name', 'bot_id', 'token', 'command_prefix', 'logging'
+        ]
         MISSING_PARAMS = [
             param for param in REQUIRED_PARAMS if not CONFIG.get(param)
         ]
@@ -33,6 +35,7 @@ class Bot(discord.ext.commands.Bot):
 
         # Pull information out of parsed config file
         self.name = CONFIG.get('bot_name')
+        self.bot_id = CONFIG.get('bot_id')
         self.token = CONFIG.get('token')
         self.command_prefix = CONFIG.get('command_prefix')
         self.enabled_features = CONFIG.get('enabled_features')
