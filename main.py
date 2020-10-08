@@ -9,17 +9,6 @@ from bot.bot import Bot
 from bot.tgacli import TGACli
 
 
-async def asyncInputLoop(func):
-    return await asyncio.coroutine(func)()
-
-
-def inputLoop(*args):
-
-    while (True):
-        cmd = input(">>> ")
-        print(cmd)
-
-
 async def threadedBot(bot):
     await bot.start(bot.get_token())
 

@@ -19,7 +19,6 @@ class Bot(discord.ext.commands.Bot):
         self.CONFIG = CONFIG
         self.OSTYPE = OSTYPE
         self.cogList = []
-        self.FEATURES = ['Insult', 'Music']
         self.thread = ""
         self.loop = ""
 
@@ -77,14 +76,25 @@ class Bot(discord.ext.commands.Bot):
         self.log.addHandler(self.handler)
 
     def enableFeatures(self):
-        print(f"{self.name} enabled features:")
+        print(f"\n{self.name} enabled features:")
         for feature in self.enabled_features:
-            if self.enabled_features[feature][
-                    "enabled"] and feature.capitalize() in self.FEATURES:
-                self.cogList.append(eval(feature.capitalize())(self))
-                self.cogList[-1].enableCog()
+            if self.enabled_features[feature]["enabled"]:
+                cog = getattr(
+                    self, f"get{feature.capitalize()}", lambda:
+                    (_ for _ in ()).throw(
+                        Exception(
+                            f"Feature {feature} does not exist. Review config.yaml"
+                        )))
+                self.cogList.append(cog)
+                self.cogList[-1]().enableCog()
                 print(f'\t{feature}')
         print("")
 
     def get_token(self):
         return self.token
+
+    def getMusic(self):
+        return Music(self)
+
+    def getInsult(self):
+        return Insult(self)
