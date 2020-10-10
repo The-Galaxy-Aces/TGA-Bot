@@ -11,6 +11,7 @@ class Insult(TGACog):
         """
         self.bot = bot
         self._last_member = None
+        self.ready = False
 
         # TODO: allow for a variety of insults from different APIs
         # TODO: ADD: https://insult.mattbas.org/api
@@ -35,10 +36,6 @@ class Insult(TGACog):
     def getInsult(self):
         self.generateInsult()
         return html.unescape(self.myInsult)
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print(f"{self.bot.name} insults are ready!")
 
     @commands.Cog.listener()
     async def on_message(self, message):

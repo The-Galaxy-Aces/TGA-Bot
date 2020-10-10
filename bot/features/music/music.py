@@ -18,6 +18,7 @@ class Music(TGACog):
         # Required for the bot:
         self.bot = bot
         self._last_member = None
+        self.ready = False
 
         # Used for music playback and functions
         self.currQueue = []
@@ -98,10 +99,6 @@ class Music(TGACog):
     def finishedSong(self):
         self.currSong += 1
         self.playNext()
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print(f"{self.bot.name} music is ready!")
 
     @commands.command()
     async def music(self, ctx, *args):

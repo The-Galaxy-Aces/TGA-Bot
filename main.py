@@ -66,15 +66,6 @@ def main():
     # Properly handle the control+c
     signal.signal(signal.SIGINT, signal_handler)
 
-    # signal.pause() is not available on windows so just do an endless loop
-    # The pause and loop is needed for now since the threads above were set to daemon
-    # and will be terminated when the main program exits
-    if OSTYPE == 'win':
-        while (True):
-            sleep(1)
-    else:
-        signal.pause()
-
 
 if __name__ == "__main__":
     main()

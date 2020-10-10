@@ -84,9 +84,9 @@ class Bot(discord.ext.commands.Bot):
                     (_ for _ in ()).throw(
                         Exception(
                             f"Feature {feature} does not exist. Review config.yaml"
-                        )))
+                        )))()
                 self.cogList.append(cog)
-                self.cogList[-1]().enableCog()
+                self.cogList[-1].enableCog()
                 print(f'\t{feature}')
         print("")
 

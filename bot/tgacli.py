@@ -20,6 +20,7 @@ class TGACli:
         self.bots = bots
         self.activeBot = 0
         self.exit = False
+        self.ready = False
 
         # The
         self.cmdMap = {
@@ -48,9 +49,23 @@ class TGACli:
 
     def inputLoop(self):
         # Wait for the bots to be ready
+        while (not self.ready):
+            if all(all(cog.ready for cog in bot.cogList) for bot in self.bots):
+                self.ready = True
+            else:
+                sleep(1)
+            """ for bot in self.bots:
+                if all(bot.is_ready() != True for bot in self.bots) and all(cog.ready != True for cog in bot.cogList):
+                    # if all(bot.is_ready() != True for bot in self.bots) and
+                    sleep(0.5)
+                else:
+                    self.ready = True """
+
         while (not self.exit):
-            cmd = input(f"{self.bots[self.activeBot].name}: >>> ")
+            activeBotName = self.bots[self.activeBot].name
+            cmd = input(f"\n{activeBotName}: >>> ")
             self.parseCommand(cmd)
+        print("InputLoopFinished")
 
     def parseCommand(self, cmd):
 
@@ -71,7 +86,10 @@ class TGACli:
         for bot in self.bots:
             bot.loop.stop()
             bot.thread.join()
-            bot.loop.close()
+
+            if not bot.loop.is_closed():
+                bot.loop.close()
+
             print(f"{bot.name} shutdown.")
         self.exit = True
         exit(0)
