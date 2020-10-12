@@ -40,7 +40,7 @@ def main():
     with open(config_file, 'r') as config_yaml:
         CONFIG = yaml.full_load(config_yaml)
 
-    for botConfig in CONFIG["bots"]:
+    for botConfig in CONFIG:
         if OSTYPE == 'win':
             asyncio.set_event_loop_policy(
                 asyncio.WindowsSelectorEventLoopPolicy())
@@ -49,7 +49,7 @@ def main():
 
         loop = asyncio.get_event_loop()
 
-        bot = Bot(botConfig["config"], OSTYPE)
+        bot = Bot(botConfig, OSTYPE)
         loop.create_task(threadedBot(bot))
 
         thread = threading.Thread(target=loopTheBot,
