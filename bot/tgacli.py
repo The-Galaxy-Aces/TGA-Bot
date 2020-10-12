@@ -1,5 +1,4 @@
 import threading
-import asyncio
 from time import sleep
 
 
@@ -37,10 +36,10 @@ class TGACli:
         }
 
         self.commandCall = {
-            0: lambda x: self.quit(x),
-            1: lambda x: self.help(x),
-            2: lambda x: self.list(x),
-            3: lambda x: self.select(x)
+            0: lambda cmd: self.quit(cmd),
+            1: lambda cmd: self.help(cmd),
+            2: lambda cmd: self.list(cmd),
+            3: lambda cmd: self.select(cmd)
         }
 
         self.thread = threading.Thread(target=self.inputLoop, args=())
@@ -54,18 +53,11 @@ class TGACli:
                 self.ready = True
             else:
                 sleep(1)
-            """ for bot in self.bots:
-                if all(bot.is_ready() != True for bot in self.bots) and all(cog.ready != True for cog in bot.cogList):
-                    # if all(bot.is_ready() != True for bot in self.bots) and
-                    sleep(0.5)
-                else:
-                    self.ready = True """
 
         while (not self.exit):
             activeBotName = self.bots[self.activeBot].name
             cmd = input(f"\n{activeBotName}: >>> ")
             self.parseCommand(cmd)
-        print("InputLoopFinished")
 
     def parseCommand(self, cmd):
 

@@ -61,7 +61,7 @@ def main():
         thread.start()
 
     # Setup the cli in its own thread
-    cli = TGACli(bots, OSTYPE)
+    TGACli(bots, OSTYPE)
 
     # Properly handle the control+c
     signal.signal(signal.SIGINT, signal_handler)

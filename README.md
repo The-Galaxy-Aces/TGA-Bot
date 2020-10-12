@@ -4,9 +4,25 @@
 
 Run this command from your shell. It will install any needed dependencies and setup a virtual environment.
 
+Linux users:
+
 ```sh
 ./build.sh
 ```
+
+Windows users from powershell:
+
+```
+./build.ps1
+```
+
+**Notes for windows users**
+
+Python 3.9 for windows may give you an error such as:
+
+> error Microsoft Visual C++ 14.0 is required
+
+Visit [this link](https://www.scivision.dev/python-windows-visual-c-14-required/) for more details and how to resolve the issue:
 
 ## Configuration
 
@@ -15,8 +31,8 @@ Modify the file with your bot parameters as such:
 
 ```yaml
 bots:
-  - bot_id: 1
-    config:
+  - config:
+      bot_id: 1
       bot_name: Your Bot Name
       token: Your Discord API Key
       command_prefix: "!"
@@ -59,8 +75,8 @@ It is also recommended but not required that each bot have a unique command pref
 
 ```yaml
 bots:
-  - bot_id: 1
-    config:
+  - config:
+      bot_id: 1
       bot_name: The Galaxy Aces Bot
       token: this_bots_token
       command_prefix: "!"
@@ -85,8 +101,8 @@ bots:
             - .ogg
             - .wav
             - .wmv
-  - bot_id: 2
-    config:
+  - config:
+      bot_id: 2
       bot_name: The Galaxy Aces Other Bot
       token: this_other_bots_token
       command_prefix: "."

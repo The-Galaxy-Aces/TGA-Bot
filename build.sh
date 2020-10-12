@@ -14,8 +14,8 @@ CONFIG="config.yaml"
 if [[ ! -f $CONFIG ]]; then
     cat > $CONFIG <<EOF
 bots:
-  - bot_id: 1
-    config: 
+  - config:
+      bot_id: 1
       bot_name: 
       token: 
       command_prefix: "!"
