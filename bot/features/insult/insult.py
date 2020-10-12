@@ -1,14 +1,12 @@
 import requests
 import html
 from discord.ext import commands
+from bot.features.tgacog import TGACog
 
 
-class Insult(commands.Cog):
-    """The Insult class
-    Don't let the mean insults hurt your feelings
-    """
+class Insult(TGACog):
     def __init__(self, bot):
-        """The Insult Cog
+        """
         Don't let the mean insults hurt your feelings
         """
         self.bot = bot
@@ -17,6 +15,9 @@ class Insult(commands.Cog):
         # TODO: allow for a variety of insults from different APIs
         # TODO: ADD: https://insult.mattbas.org/api
         # TODO: ADD: https://generatorfun.com/insult-generator
+
+        REQUIRED_PARAMS = []
+        self.processConfig(self.bot, REQUIRED_PARAMS)
 
         self.uri = "https://evilinsult.com/generate_insult.php?lang=en&type=json"
         self.myInsult = ""

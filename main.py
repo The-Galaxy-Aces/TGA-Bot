@@ -17,19 +17,18 @@ def loopTheBot(loop):
         loop.run_forever()
 
 
-def signal_handler(
-    sig,
-    frame,
-):
-    sys.exit(0)
-
-
 def main():
+    def signal_handler(
+        sig,
+        frame,
+    ):
+        sys.exit(0)
 
+    bots = []
     config_file = "config.yaml"
 
     # May replace with with platform.system() later
-    osType = 'win' if sys.version_info[0] == 3 and sys.version_info[
+    OSTYPE = 'win' if sys.version_info[0] == 3 and sys.version_info[
         1] >= 8 and sys.platform.startswith('win') else 'linux'
 
     # Check for config file
@@ -41,7 +40,7 @@ def main():
         CONFIG = yaml.full_load(config_yaml)
 
     for botConfig in CONFIG["bots"]:
-        if osType == 'win':
+        if OSTYPE == 'win':
             asyncio.set_event_loop_policy(
                 asyncio.WindowsSelectorEventLoopPolicy())
         else:
@@ -49,7 +48,8 @@ def main():
 
         loop = asyncio.get_event_loop()
 
-        bot = Bot(botConfig["config"])
+        bot = Bot(botConfig["config"], OSTYPE)
+        bots.append(bot)
         loop.create_task(threadedBot(bot))
 
         thread = threading.Thread(target=loopTheBot,
@@ -63,7 +63,7 @@ def main():
     # signal.pause() is not available on windows so just do an endless loop
     # The pause and loop is needed for now since the threads above were set to daemon
     # and will be terminated when the main program exits
-    if osType == 'win':
+    if OSTYPE == 'win':
         while (True):
             sleep(1)
     else:

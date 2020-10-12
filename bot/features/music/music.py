@@ -7,14 +7,14 @@ import threading
 from time import sleep
 import pathlib
 from discord.ext import commands
+from bot.features.tgacog import TGACog
 
 
-class Music(commands.Cog):
+class Music(TGACog):
     """
     Sit back and enjoy some chill tunes
     """
     def __init__(self, bot):
-
         # Required for the bot:
         self.bot = bot
         self._last_member = None
@@ -29,27 +29,18 @@ class Music(commands.Cog):
         self.localLibrary = {}
         self.initalLock = True
 
-        self.processConfig()
+        REQUIRED_PARAMS = ['local_path', 'audio_types', 'search_frequency']
+        self.processConfig(self.bot, REQUIRED_PARAMS)
+
+        self.localPath = self.CONFIG['local_path']
+        self.audioTypes = self.CONFIG['audio_types']
+        self.searchFrequency = self.CONFIG['search_frequency']  # In seconds
 
         # Only create the thread to search the local library if it is enabled
         if self.localPath:
             self.searchThread = threading.Thread(target=self.searchingThread,
                                                  daemon=True)
             self.searchThread.start()
-
-    def processConfig(self):
-        self.CONFIG = self.bot.enabled_features['music']
-
-        REQUIRED_PARAMS = ['local_path', 'audio_types', 'search_frequency']
-        MISSING_PARAMS = [
-            param for param in REQUIRED_PARAMS if not self.CONFIG.get(param)
-        ]
-        if MISSING_PARAMS:
-            raise AssertionError(f"config.yaml missing {MISSING_PARAMS}")
-
-        self.localPath = self.CONFIG['local_path']
-        self.audioTypes = self.CONFIG['audio_types']
-        self.searchFrequency = self.CONFIG['search_frequency']  # In seconds
 
     def searchingThread(self):
         '''
@@ -110,7 +101,7 @@ class Music(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print("Music is ready!")
+        print(f"{self.bot.name} music is ready!")
 
     @commands.command()
     async def music(self, ctx, *args):
