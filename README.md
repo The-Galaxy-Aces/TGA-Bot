@@ -33,7 +33,7 @@ Modify the file with your bot parameters as such:
 
 ```yaml
 - bot_id: 1
-  bot_name: Your Bot Name
+  name: Your Bot Name
   token: Your Discord API Key
   command_prefix: "!"
   logging:
@@ -75,7 +75,7 @@ It is also recommended but not required that each bot have a unique command pref
 
 ```yaml
 - bot_id: 1
-  bot_name: The Galaxy Aces Bot
+  name: The Galaxy Aces Bot
   token: this_bots_token
   command_prefix: "!"
   logging:
@@ -100,7 +100,7 @@ It is also recommended but not required that each bot have a unique command pref
         - .wav
         - .wmv
 - bot_id: 2
-  bot_name: The Galaxy Aces Other Bot
+  name: The Galaxy Aces Other Bot
   token: this_other_bots_token
   command_prefix: .
   logging:

@@ -23,7 +23,8 @@ class Bot(discord.ext.commands.Bot):
 
         # Check bot for minimal required params to make bot run properly
         REQUIRED_PARAMS = [
-            'bot_name', 'bot_id', 'token', 'command_prefix', 'logging'
+            'bot_id', 'command_prefix', 'enabled_features', 'logging', 'name',
+            'token'
         ]
         MISSING_PARAMS = [
             param for param in REQUIRED_PARAMS if not CONFIG.get(param)
@@ -32,12 +33,12 @@ class Bot(discord.ext.commands.Bot):
             raise AssertionError(f"config.yaml missing {MISSING_PARAMS}")
 
         # Pull information out of parsed config file
-        self.name = CONFIG.get('bot_name')
         self.bot_id = CONFIG.get('bot_id')
-        self.token = CONFIG.get('token')
         self.command_prefix = CONFIG.get('command_prefix')
         self.enabled_features = CONFIG.get('enabled_features')
         self.logging = CONFIG.get('logging')
+        self.name = CONFIG.get('name')
+        self.token = CONFIG.get('token')
 
         super().__init__(self.command_prefix)
 
