@@ -26,7 +26,7 @@ class Poll(TGACog):
         elif cmd[0] == "stats":
             self.stats(cmd[1:])
         elif cmd[0] == "vote":
-            self.vote(cmd[1:])
+            self.vote(cmd[1:], ctx.message.author.mention)
         else:
             help(self)
 
@@ -54,16 +54,30 @@ class Poll(TGACog):
         print(f"pollName: {pollName}")
 
         if not self.polls.get(pollName):
-            self.polls.update({pollName: pollValues})
+            self.polls.update(
+                {pollName: {
+                    "values": pollValues,
+                    "alreadyVoted": []
+                }})
         else:
             # TODO if the poll exists then show a message
             pass
 
         print(self.polls)
 
-    def vote(self, cmd):
-        # TODO Check if the user has already voted and reject if they do
-        self.polls[cmd[0]][cmd[1]] += 1
+    def vote(self, cmd, voter):
+        poll = self.polls.get(cmd[0])
+        usersVote = cmd[1]
+
+        if poll and voter not in poll.get("alreadyVoted"):
+            print(poll.get("alreadyVoted"))
+            poll.get("values")[usersVote] += 1
+            poll.get("alreadyVoted").append(voter)
+        else:
+            #TODO tell user they have already voted
+            # Maybe we can allow them to switch the vote
+            pass
+        print(self.polls)
 
     def stats(self, cmd):
         pass
