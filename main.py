@@ -4,7 +4,6 @@ import asyncio
 import yaml
 import signal
 import sys
-from time import sleep
 from bot.bot import Bot
 from bot.tgacli import TGACli
 
