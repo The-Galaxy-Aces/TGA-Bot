@@ -5,7 +5,7 @@ import discord
 import discord.ext
 from time import localtime, strftime, sleep
 
-from bot.features.insult import Insult
+from bot.features.insult.insult import Insult
 from bot.features.music.music import Music
 
 
