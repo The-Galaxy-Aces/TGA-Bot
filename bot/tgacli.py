@@ -20,8 +20,8 @@ class TGACli:
         self.activeBot = 0
         self.exit = False
         self.ready = False
-
-        # The
+        '''The command map provides a simple integer to string mapping which allows for
+        multiple different commands to all call the same function.'''
         self.cmdMap = {
             "e": 0,
             "exit": 0,
@@ -34,7 +34,8 @@ class TGACli:
             "s": 3,
             "select": 3
         }
-
+        '''commandCall stores the references of the cmdMap to a function which each command
+        is mapped to'''
         self.commandCall = {
             0: lambda cmd: self.quit(cmd),
             1: lambda cmd: self.help(cmd),
@@ -76,6 +77,7 @@ class TGACli:
         '''
         print("Exiting")
         for bot in self.bots:
+            bot.shutdown()
             bot.loop.stop()
             bot.thread.join()
 

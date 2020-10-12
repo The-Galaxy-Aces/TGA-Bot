@@ -90,6 +90,11 @@ class Bot(discord.ext.commands.Bot):
                 print(f'\t{feature}')
         print("")
 
+    def shutdown(self):
+        self.log.info("Shutting down")
+        for cog in self.cogList:
+            cog.shutdown()
+
     def get_token(self):
         return self.token
 

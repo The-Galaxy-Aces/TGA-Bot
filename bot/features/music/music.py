@@ -319,6 +319,11 @@ class Music(TGACog):
                 "```I need to be playing music in order to come to your channel.```"
             )
 
+    def shutdown(self):
+        if self.voiceClient and self.voiceClient.is_connected():
+            self.voiceClient.stop()
+        # TODO disconnect from voice
+
 
 def getSongMetadata(song):
     try:
