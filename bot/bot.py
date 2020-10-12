@@ -7,6 +7,7 @@ from time import localtime, strftime, sleep
 
 from bot.features.insult.insult import Insult
 from bot.features.music.music import Music
+from bot.features.poll.poll import Poll
 
 
 class Bot(discord.ext.commands.Bot):
@@ -93,8 +94,11 @@ class Bot(discord.ext.commands.Bot):
     def get_token(self):
         return self.token
 
+    def getInsult(self):
+        return Insult(self)
+
     def getMusic(self):
         return Music(self)
 
-    def getInsult(self):
-        return Insult(self)
+    def getPoll(self):
+        return Poll(self)
