@@ -80,17 +80,16 @@ class Music(TGACog):
 
     def searchLibrary(self, pattern):
 
-        newQueue = []
-
-        for song in self.localLibrary:
-            if fnmatch.fnmatch(f"{song}", f"*{pattern}*"):
-                newQueue.append(song)
-        return newQueue
+        return [
+            song for song in self.localLibrary
+            if fnmatch.fnmatch(f"{song}", f"*{pattern}*")
+        ]
 
     def playNext(self):
         if self.currSong >= 0 and self.currSong < len(self.currQueue):
             self.voiceClient.play(discord.PCMVolumeTransformer(
-                discord.FFmpegPCMAudio(self.currQueue[self.currSong]),
+                discord.FFmpegPCMAudio(self.currQueue[self.currSong],
+                                       options="-loglevel panic"),
                 self.currVolume),
                                   after=lambda e: self.finishedSong())
         else:
@@ -169,7 +168,7 @@ class Music(TGACog):
 
         self.playNext()
         await ctx.message.channel.send(
-            f"```Now playing: {getSongMetadata(self.currQueue[self.currSong])}```"
+            f"```Now playing: {self.getSongMetadata(self.currQueue[self.currSong])}```"
         )
 
     @commands.command()
@@ -178,15 +177,15 @@ class Music(TGACog):
         Displays information about the current song queue.
         '''
         if self.currQueue:
-            queueString = []
+            queueString = [
+                f"{f'Previous song: {self.getSongMetadata(self.currQueue[self.currSong-1])}' if self.currSong > 0 else ''}"
+            ]
+
             queueString.append(
-                f"{f'Previous song: {getSongMetadata(self.currQueue[self.currSong-1])}' if self.currSong > 0 else ''}"
+                f"{f'Current song: {self.getSongMetadata(self.currQueue[self.currSong])}' if self.currSong >= 0 else ''}"
             )
             queueString.append(
-                f"{f'Current song: {getSongMetadata(self.currQueue[self.currSong])}' if self.currSong >= 0 else ''}"
-            )
-            queueString.append(
-                f"{f'Next song: {getSongMetadata(self.currQueue[self.currSong+1])}' if self.currSong + 1 < len(self.currQueue) else ''}"
+                f"{f'Next song: {self.getSongMetadata(self.currQueue[self.currSong+1])}' if self.currSong + 1 < len(self.currQueue) else ''}"
             )
             sep = "\n"
             await ctx.message.channel.send(f'''
@@ -208,7 +207,7 @@ class Music(TGACog):
     async def after_next(self, ctx):
         if self.currSong + 1 < len(self.currQueue):
             await ctx.message.channel.send(
-                f"```Now playing: {getSongMetadata(self.currQueue[self.currSong + 1])}```"
+                f"```Now playing: {self.getSongMetadata(self.currQueue[self.currSong + 1])}```"
             )
         else:
             await self.voiceClient.disconnect()
@@ -234,7 +233,7 @@ class Music(TGACog):
         if self.didPrevExecute:
             self.didPrevExecute = False
             await ctx.message.channel.send(
-                f"```Now playing: {getSongMetadata(self.currQueue[self.currSong + 1])}```"
+                f"```Now playing: {self.getSongMetadata(self.currQueue[self.currSong + 1])}```"
             )
 
     @commands.command()
@@ -270,7 +269,7 @@ class Music(TGACog):
         '''
         if self.currSong >= 0 and self.currSong < len(self.currQueue):
             await ctx.message.channel.send(
-                f"```Now playing: {getSongMetadata(self.currQueue[self.currSong])}```"
+                f"```Now playing: {self.getSongMetadata(self.currQueue[self.currSong])}```"
             )
 
     @commands.command()
@@ -319,22 +318,16 @@ class Music(TGACog):
                 "```I need to be playing music in order to come to your channel.```"
             )
 
-    def shutdown(self):
-        if self.voiceClient and self.voiceClient.is_connected():
-            self.voiceClient.stop()
-        # TODO disconnect from voice
+    def getSongMetadata(self, song):
+        try:
+            md = audio_metadata.load(song)
+            artist = md["tags"]["albumartist"]
+            if not artist:
+                artist = md["tags"]["artist"]
+            title = md["tags"]["title"]
+            album = md["tags"]["album"]
+        except Exception as e:
+            self.bot.log.info(f"ERROR: {song} has invalid metadata: {e}")
+            return (f"{song.split(os.sep)[-1]} has invalid metadata.")
 
-
-def getSongMetadata(song):
-    try:
-        md = audio_metadata.load(song)
-        artist = md["tags"]["albumartist"]
-        if not artist:
-            artist = md["tags"]["artist"]
-        title = md["tags"]["title"]
-        album = md["tags"]["album"]
-    except Exception as e:
-        print(f"ERROR: {song} has invalid metadata: {e}")
-        return (f"{song.split(os.sep)[-1]} has invalid metadata.")
-
-    return f"{title[0]} by: {artist[0]} from: {album[0]}."
+        return f"{title[0]} by: {artist[0]} from: {album[0]}."

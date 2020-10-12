@@ -23,9 +23,6 @@ class TGACog(commands.Cog):
         self.bot.log.debug(f"Disable Cog {self.__class__.__name__.lower()}")
         self.bot.remove_cog(self)
 
-    def shutdown(self):
-        pass
-
     @commands.Cog.listener()
     async def on_ready(self):
         print(f"{self.bot.name} {self.__class__.__name__.lower()} is ready!")

@@ -86,13 +86,8 @@ class Bot(discord.ext.commands.Bot):
                         )))()
                 self.cogList.append(cog)
                 self.cogList[-1].enableCog()
-                print(f'\t{feature}')
+                print(f'  {feature}')
         print("")
-
-    def shutdown(self):
-        self.log.info("Shutting down")
-        for cog in self.cogList:
-            cog.shutdown()
 
     def get_token(self):
         return self.token

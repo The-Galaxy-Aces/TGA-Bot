@@ -77,7 +77,6 @@ class TGACli:
         '''
         print("Exiting")
         for bot in self.bots:
-            bot.shutdown()
             bot.loop.stop()
             bot.thread.join()
 
