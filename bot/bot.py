@@ -75,7 +75,7 @@ class Bot(discord.ext.commands.Bot):
         self.log.addHandler(self.handler)
 
     def enableFeatures(self):
-        print(f"\n{self.name} enabled features:")
+        print(f"{self.name} enabled features:", end="\n")
         for feature in self.enabled_features:
             if self.enabled_features[feature]["enabled"]:
                 cog = getattr(
