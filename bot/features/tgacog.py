@@ -3,7 +3,7 @@ from discord.ext import commands
 
 class TGACog(commands.Cog):
     def __init__(self, bot):
-        raise AssertionError(f"TGACog should not be called.")
+        raise AssertionError("TGACog should not be called.")
 
     def processConfig(self, bot, REQUIRED_PARAMS):
 

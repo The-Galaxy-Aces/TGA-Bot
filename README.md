@@ -18,7 +18,7 @@ Windows users from powershell:
 ./build.ps1
 ```
 
-#### Notes for windows users
+### Notes for windows users
 
 Python 3.9 for windows may give you an error such as:
 

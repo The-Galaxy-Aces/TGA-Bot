@@ -1,9 +1,8 @@
 import os
-import json
 import logging
 import discord
 import discord.ext
-from time import localtime, strftime, sleep
+from time import localtime, strftime
 
 from bot.features.insult.insult import Insult
 from bot.features.music.music import Music
