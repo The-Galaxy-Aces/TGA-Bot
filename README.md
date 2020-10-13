@@ -57,6 +57,8 @@ At the very least you will need to include:
 - token (Your bot's discord API token)
 - command_prefix (A single character which will be used to preface bot commands e.g. !music)
 
+**See the [Appendix](#appendix) for more details on the config.yaml parameters.**
+
 ## Start the Bot
 
 Run this command from your shell:
