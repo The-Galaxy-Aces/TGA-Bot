@@ -1,9 +1,8 @@
 import os
-import json
 import logging
 import discord
 import discord.ext
-from time import localtime, strftime, sleep
+from time import localtime, strftime
 
 from bot.features.insult.insult import Insult
 from bot.features.music.music import Music
@@ -19,10 +18,14 @@ class Bot(discord.ext.commands.Bot):
         self.CONFIG = CONFIG
         self.OSTYPE = OSTYPE
         self.cogList = []
-        self.FEATURES = ['Insult', 'Music']
+        self.thread = ""
+        self.loop = ""
 
         # Check bot for minimal required params to make bot run properly
-        REQUIRED_PARAMS = ['bot_name', 'token', 'command_prefix', 'logging']
+        REQUIRED_PARAMS = [
+            'bot_id', 'command_prefix', 'enabled_features', 'logging', 'name',
+            'token'
+        ]
         MISSING_PARAMS = [
             param for param in REQUIRED_PARAMS if not CONFIG.get(param)
         ]
@@ -30,11 +33,12 @@ class Bot(discord.ext.commands.Bot):
             raise AssertionError(f"config.yaml missing {MISSING_PARAMS}")
 
         # Pull information out of parsed config file
-        self.name = CONFIG.get('bot_name')
-        self.token = CONFIG.get('token')
+        self.bot_id = CONFIG.get('bot_id')
         self.command_prefix = CONFIG.get('command_prefix')
         self.enabled_features = CONFIG.get('enabled_features')
         self.logging = CONFIG.get('logging')
+        self.name = CONFIG.get('name')
+        self.token = CONFIG.get('token')
 
         super().__init__(self.command_prefix)
 
@@ -72,14 +76,25 @@ class Bot(discord.ext.commands.Bot):
         self.log.addHandler(self.handler)
 
     def enableFeatures(self):
-        print(f"{self.name} enabled features:")
+        print(f"{self.name} enabled features:", end="\n")
         for feature in self.enabled_features:
-            if self.enabled_features[feature][
-                    "enabled"] and feature.capitalize() in self.FEATURES:
-                self.cogList.append(eval(feature.capitalize())(self))
+            if self.enabled_features[feature]["enabled"]:
+                cog = getattr(
+                    self, f"get{feature.capitalize()}", lambda:
+                    (_ for _ in ()).throw(
+                        Exception(
+                            f"Feature {feature} does not exist. Review config.yaml"
+                        )))()
+                self.cogList.append(cog)
                 self.cogList[-1].enableCog()
-                print(f'\t{feature}')
+                print(f'  {feature}')
         print("")
 
     def get_token(self):
         return self.token
+
+    def getMusic(self):
+        return Music(self)
+
+    def getInsult(self):
+        return Insult(self)
