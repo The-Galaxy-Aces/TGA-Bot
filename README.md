@@ -6,7 +6,7 @@
 
 ### Linux:
 
-No special instructions. Skip to [Build the Bot](#markdown-header-build-the-bot)
+No special instructions. Skip to [Build the Bot](#build-the-bot)
 
 ### Windows:
 
