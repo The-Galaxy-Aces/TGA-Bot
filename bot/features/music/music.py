@@ -327,7 +327,7 @@ class Music(TGACog):
             title = md["tags"]["title"]
             album = md["tags"]["album"]
         except Exception as e:
-            self.bot.log.info(f"ERROR: {song} has invalid metadata: {e}")
+            self.bot.log.error(f"{song} has invalid metadata: {e}")
             return (f"{song.split(os.sep)[-1]} has invalid metadata.")
 
         return f"{title[0]} by: {artist[0]} from: {album[0]}."
