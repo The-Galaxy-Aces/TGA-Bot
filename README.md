@@ -2,20 +2,40 @@
 
 # The Galaxy Aces Discord Bot
 
+## Prepare your system
+
+## Linux:
+
+No special instructions. Skip to [Build the Bot](#markdown-header-build-the-bot)
+
+### Windows:
+
+If you are planning to use the Music feature then you will need to have ffmpeg available on your system.
+
+If you have chocolately installed you can use it to install ffmpeg:
+
+```powershell
+ choco install ffmpeg
+```
+
+Otherwise you will need to follow the instructions on the [ffmpeg site](https://ffmpeg.org/) to add ffmpeg to your system.
+
 ## Build the Bot
 
 Run this command from your shell. It will install any needed dependencies and setup a virtual environment.
 
 Linux users:
 
+**_You will need to run this as sudo to install any system dependencies._**
+
 ```sh
-./build.sh
+sudo ./build.sh
 ```
 
 Windows users from powershell:
 
 ```powershell
-./build.ps1
+.\build.ps1
 ```
 
 ### Notes for windows users
@@ -29,35 +49,13 @@ Visit [this link](https://www.scivision.dev/python-windows-visual-c-14-required/
 ## Configuration
 
 The build script should have created a config.yaml file in the current directory.
-Modify the file with your bot parameters as such:
+Modify your config.yaml with your bot parameters.
 
-```yaml
-- bot_id: 1
-  name: Your Bot Name
-  token: Your Discord API Key
-  command_prefix: "!"
-  logging:
-    enabled: True
-    logging_level: DEBUG
-  enabled_features:
-    insult:
-      enabled: True
-      permissions:
-        - everyone
-    music:
-      enabled: True
-      permissions:
-        - everyone
-      local_path: /music
-      search_frequency: 300
-      audio_types:
-        - .flac
-        - .mp3
-        - .mp4
-        - .ogg
-        - .wav
-        - .wmv
-```
+At the very least you will need to include:
+
+- name (The internal name for your bot)
+- token (Your bot's discord API token)
+- command_prefix (A single character which will be used to preface bot commands e.g. !music)
 
 ## Start the Bot
 
@@ -125,3 +123,13 @@ It is also recommended but not required that each bot have a unique command pref
         - .wav
         - .wmv
 ```
+
+## Appendix
+
+### config.yaml parameter descriptions
+
+#### music feature
+
+- local\*path - A system path pointing to a local library of music. Ideally the directory structure will be local*path/Artists/Albums/songs.\* But any structure should work. The music feature will search this directory for songs which match the \*\*\_audio_types**\* every **\_search_frequency*\*\* seconds.
+- search_frequency - How frequently you want the music feature to search for new music. This value is in seconds. Default is 300 seconds
+- audio_types - The different audio formats you want the music feature to search for. These audio types must be readable by ffmpeg.
