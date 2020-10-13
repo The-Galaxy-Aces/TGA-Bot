@@ -91,8 +91,14 @@ class TGACli:
         '''
         Lists all the avaiable bots.
         '''
-        for bot in self.bots:
-            print(f"{bot.bot_id}\t{bot.name}")
+        if not cmd:
+            for bot in self.bots:
+                print(f"{bot.bot_id}\t{bot.name}")
+        elif cmd[0] == "cogs":
+            for cog in self.bots[self.activeBot].cogList:
+                print(cog.__class__.__name__)
+        else:
+            self.invalidCmd(cmd[0], "list")
 
     def select(self, cmd):
         '''
@@ -113,11 +119,14 @@ class TGACli:
             )
             self.list(cmd)
 
+    def invalidCmd(self, cmd, parent):
+        print(f"{cmd} is an invalid option for {parent}.")
+
     def help(self, cmd):
         '''
         Displays this help menu.
         '''
-        print("\n")
+        print("")
         if not len(cmd):
             help(self)
         else:
