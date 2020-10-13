@@ -130,6 +130,6 @@ It is also recommended but not required that each bot have a unique command pref
 
 #### music feature
 
-- local\*path - A system path pointing to a local library of music. Ideally the directory structure will be local*path/Artists/Albums/songs.\* But any structure should work. The music feature will search this directory for songs which match the \*\*\_audio_types**\* every **\_search_frequency*\*\* seconds.
-- search_frequency - How frequently you want the music feature to search for new music. This value is in seconds. Default is 300 seconds
-- audio_types - The different audio formats you want the music feature to search for. These audio types must be readable by ffmpeg.
+- **local_path** - A system path pointing to a local library of music. Ideally the directory structure will be **local_path/Artists/Albums/songs** But any structure should work. The music feature will search this directory for songs which match the **audio_types** every **search_frequency** seconds.
+- **search_frequency** - How frequently you want the music feature to search for new music. This value is in seconds. Default is 300 seconds
+- **audio_types** - The different audio formats you want the music feature to search for. These audio types must be readable by ffmpeg.
