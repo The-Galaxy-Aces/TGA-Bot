@@ -4,7 +4,7 @@
 
 ## Prepare your system
 
-## Linux:
+### Linux:
 
 No special instructions. Skip to [Build the Bot](#markdown-header-build-the-bot)
 
