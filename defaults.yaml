@@ -3,11 +3,11 @@
   token: 
   command_prefix: "!"
   logging:
-    enabled: "True"
+    enabled: True
     logging_level: DEBUG
   enabled_features:
     insult:
-      enabled: "True"
+      enabled: True
       permissions:
         - everyone
     music:
