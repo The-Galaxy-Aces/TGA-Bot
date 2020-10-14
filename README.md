@@ -2,19 +2,39 @@
 
 # The Galaxy Aces Discord Bot
 
-## Prepare your system
+## Contents
+- [Linux Install](#linux-install)
+- [Windows Install](#windows-install)
+- [Configuration](#configuration)
+- - [Running Multiple Bots](#running-multiple-bots)
+- [Appendix](#appendix)
+- - [Music Feature](#music-feature)
 
-### Linux
-
-Clone the repo:
+## Linux Install
 
 ```sh
-git clone git@github.com:Travisivart/TGA-Bot.git
+# Clone the repo
+git clone git@github.com:Travisivart/TGA-Bot.git && cd TGA-Bot
+
+# install any required dependencies and build the virtual environment
+sudo ./build.sh
 ```
 
-Skip to [Build the Bot](#build-the-bot)
+The build script should have created a config.yaml file in the current directory.
+Modify your config.yaml with your bot parameters, your bot will need a custom name,
+a discord API token, and a command_prefix.
+See [Configuration](#configuration) for more details
+**See the [Appendix](#appendix) for more details on the config.yaml parameters.**
 
-### Windows
+```sh
+# Activate the virtual environment
+. venv/bin/activate
+
+# Run the bot
+python main.py
+```
+
+## Windows Install
 
 If you are planning to use the Music feature then you will need to have ffmpeg available on your system.
 
@@ -26,22 +46,26 @@ If you have chocolately installed you can use it to install ffmpeg:
 
 Otherwise you will need to follow the instructions on the [ffmpeg site](https://ffmpeg.org/) to add ffmpeg to your system.
 
-## Build the Bot
+```powershell
+# Clone the repo
+git clone git@github.com:Travisivart/TGA-Bot.git && cd TGA-Bot
 
-Run this command from your shell. It will install any needed dependencies and setup a virtual environment.
+# Build the virtual environment
+.\build.ps1
 
-Linux users:
-
-**_You will need to run this as sudo to install any system dependencies._**
-
-```sh
-sudo ./build.sh
 ```
 
-Windows users from powershell:
+The build script should have created a config.yaml file in the current directory.
+Modify your config.yaml with your bot parameters, your bot will need a custom name,
+a discord API token, and a command_prefix.
+See [Configuration](#configuration) for more details
 
 ```powershell
-.\build.ps1
+# Activate the virtual environment
+.\venv\Scripts\activate
+
+# Run the bot
+python main.py
 ```
 
 ### Notes for windows users
@@ -54,29 +78,15 @@ Visit [this link](https://www.scivision.dev/python-windows-visual-c-14-required/
 
 ## Configuration
 
-The build script should have created a config.yaml file in the current directory.
-Modify your config.yaml with your bot parameters.
+### Minimum Configuration
+Your config.yaml file will at minimum need:
+- name
+- token
+- command_prefix
 
-At the very least you will need to include:
+Before it is able to run.
 
-  - name (The internal name for your bot)
-  - token (Your bot's discord API token)
-  - command_prefix (A single character which will be used to preface bot commands e.g. !music)
-
-**See the [Appendix](#appendix) for more details on the config.yaml parameters.**
-
-## Start the Bot
-
-### Linux
-
-Activate the virtual environment and run the app:
-
-```sh
-. venv/bin/activate
-python main.py
-```
-
-## Running Multiple Bots
+### Running Multiple Bots
 
 To run multiple bots on your server simply add additional bot configuration to your config.yaml like so.
 Keep in mind that each bot needs to have a unique id and should have a unique token.
@@ -100,7 +110,7 @@ It is also recommended but not required that each bot have a unique command pref
       permissions:
         - everyone
       local_path: /music
-      search_frequency: 10
+      search_frequency: 300
       audio_types:
         - .flac
         - .mp3
@@ -139,8 +149,15 @@ It is also recommended but not required that each bot have a unique command pref
 
 ### config.yaml parameter descriptions
 
-#### music feature
+#### Core bot parameters
+- **name** - A name for the bot. It can be unique if you want, but is not required. However it will be more difficult to distingush multiple bots if you are running multiple.
+- **token** - A discord developer API token. You can get one [here](https://discord.com/developers/applications)
+- **command_prefix** - A single character which you will use to preface all commands for this bot e.g. !music
+- **logging** - Enable or disable logging for this bot by setting the enabled value to True or False.
+- - **logging_level** - The level of logging. Possible options: [NONE, INFO, WARNING, ERROR, DEBUG]
 
-  - **local_path** - A system path pointing to a local library of music. Ideally the directory structure will be **local_path/Artists/Albums/songs** But any structure should work. The music feature will search this directory for songs which match the **audio_types** every **search_frequency** seconds.
-  - **search_frequency** - How frequently you want the music feature to search for new music. This value is in seconds. Default is 300 seconds
-  - **audio_types** - The different audio formats you want the music feature to search for. These audio types must be readable by ffmpeg.
+#### Music Feature
+
+- **local_path** - A system path pointing to a local library of music. Ideally the directory structure will be **local_path/Artists/Albums/songs** But any structure should work. The music feature will search this directory for songs which match the **audio_types** every **search_frequency** seconds.
+- **search_frequency** - How frequently you want the music feature to search for new music. This value is in seconds. Default is 300 seconds
+- **audio_types** - The different audio formats you want the music feature to search for. These audio types must be readable by ffmpeg.
