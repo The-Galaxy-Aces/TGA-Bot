@@ -16,6 +16,7 @@ install_TGABot(){
     virtualenv -p python3 "$VENV"
   fi
 
+  # shellcheck disable=SC1091 # Don't follow source
   . venv/bin/activate
 
   pip3 install -r requirements.txt
@@ -29,7 +30,10 @@ install_TGABot(){
 
 install_alpine(){
   apk update
+
+  # shellcheck disable=SC2086 # Intended splitting of ALPINE_BUILD_PKGS
   apk add $ALPINE_BUILD_PKGS
+  # shellcheck disable=SC2086 # Intended splitting of ALPINE_REQUIRED_PKGS
   apk add $ALPINE_REQUIRED_PKGS
 
   # Install python/pip
@@ -45,7 +49,9 @@ install_alpine(){
 
 install_debian(){
   apt update
+  # shellcheck disable=SC2086 # Intended splitting of DEBIAN_BUILD_PKGS
   apt install -y $DEBIAN_BUILD_PKGS
+  # shellcheck disable=SC2086 # Intended splitting of DEBIAN_REQUIRED_PKGS
   apt install -y $DEBIAN_REQUIRED_PKGS
   ln -sf python3 /usr/bin/python
   python -m ensurepip
@@ -53,7 +59,8 @@ install_debian(){
   # Install the Bot
   install_TGABot
 
-  apt remove -y $DEBIAN_BUILD_PKGS
+  # shellcheck disable=SC2086 # Intended splitting of DEBIAN_BUILD_PKGS
+  apt remove -y ${DEBIAN_BUILD_PKGS}
 }
 
 if [ "$(whoami)" != "root" ]; then
