@@ -158,7 +158,7 @@ It is also recommended but not required that each bot have a unique command pref
 -   **token** - A discord developer API token. You can get one [here](https://discord.com/developers/applications)
 -   **command_prefix** - A single character which you will use to preface all commands for this bot e.g. !music
 -   **logging** - Enable or disable logging for this bot by setting the enabled value to True or False.
--   -   **logging_level** - The level of logging. Possible options: [NONE, INFO, WARNING, ERROR, DEBUG]
+-   -   **logging_level** - The level of logging. Possible options: NONE, INFO, WARNING, ERROR, DEBUG
 
 #### Music Feature
 
