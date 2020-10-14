@@ -3,12 +3,13 @@
 # The Galaxy Aces Discord Bot
 
 ## Contents
-- [Linux Install](#linux-install)
-- [Windows Install](#windows-install)
-- [Configuration](#configuration)
-- - [Running Multiple Bots](#running-multiple-bots)
-- [Appendix](#appendix)
-- - [Music Feature](#music-feature)
+
+-   [Linux Install](#linux-install)
+-   [Windows Install](#windows-install)
+-   [Configuration](#configuration)
+-   -   [Running Multiple Bots](#running-multiple-bots)
+-   [Appendix](#appendix)
+-   -   [Music Feature](#music-feature)
 
 ## Linux Install
 
@@ -79,10 +80,12 @@ Visit [this link](https://www.scivision.dev/python-windows-visual-c-14-required/
 ## Configuration
 
 ### Minimum Configuration
+
 Your config.yaml file will at minimum need:
-- name
-- token
-- command_prefix
+
+-   name
+-   token
+-   command_prefix
 
 Before it is able to run.
 
@@ -150,14 +153,15 @@ It is also recommended but not required that each bot have a unique command pref
 ### config.yaml parameter descriptions
 
 #### Core bot parameters
-- **name** - A name for the bot. It can be unique if you want, but is not required. However it will be more difficult to distingush multiple bots if you are running multiple.
-- **token** - A discord developer API token. You can get one [here](https://discord.com/developers/applications)
-- **command_prefix** - A single character which you will use to preface all commands for this bot e.g. !music
-- **logging** - Enable or disable logging for this bot by setting the enabled value to True or False.
-- - **logging_level** - The level of logging. Possible options: [NONE, INFO, WARNING, ERROR, DEBUG]
+
+-   **name** - A name for the bot. It can be unique if you want, but is not required. However it will be more difficult to distingush multiple bots if you are running multiple.
+-   **token** - A discord developer API token. You can get one [here](https://discord.com/developers/applications)
+-   **command_prefix** - A single character which you will use to preface all commands for this bot e.g. !music
+-   **logging** - Enable or disable logging for this bot by setting the enabled value to True or False.
+-   -   **logging_level** - The level of logging. Possible options: [NONE, INFO, WARNING, ERROR, DEBUG]
 
 #### Music Feature
 
-- **local_path** - A system path pointing to a local library of music. Ideally the directory structure will be **local_path/Artists/Albums/songs** But any structure should work. The music feature will search this directory for songs which match the **audio_types** every **search_frequency** seconds.
-- **search_frequency** - How frequently you want the music feature to search for new music. This value is in seconds. Default is 300 seconds
-- **audio_types** - The different audio formats you want the music feature to search for. These audio types must be readable by ffmpeg.
+-   **local_path** - A system path pointing to a local library of music. Ideally the directory structure will be **local_path/Artists/Albums/songs** But any structure should work. The music feature will search this directory for songs which match the **audio_types** every **search_frequency** seconds.
+-   **search_frequency** - How frequently you want the music feature to search for new music. This value is in seconds. Default is 300 seconds
+-   **audio_types** - The different audio formats you want the music feature to search for. These audio types must be readable by ffmpeg.
