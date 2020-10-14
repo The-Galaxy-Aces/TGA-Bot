@@ -4,7 +4,7 @@
 
 ## Prepare your system
 
-### Linux:
+### Linux
 
 Clone the repo:
 
@@ -14,7 +14,7 @@ git clone git@github.com:Travisivart/TGA-Bot.git
 
 Skip to [Build the Bot](#build-the-bot)
 
-### Windows:
+### Windows
 
 If you are planning to use the Music feature then you will need to have ffmpeg available on your system.
 
@@ -59,15 +59,15 @@ Modify your config.yaml with your bot parameters.
 
 At the very least you will need to include:
 
-- name (The internal name for your bot)
-- token (Your bot's discord API token)
-- command_prefix (A single character which will be used to preface bot commands e.g. !music)
+  - name (The internal name for your bot)
+  - token (Your bot's discord API token)
+  - command_prefix (A single character which will be used to preface bot commands e.g. !music)
 
 **See the [Appendix](#appendix) for more details on the config.yaml parameters.**
 
 ## Start the Bot
 
-### Linux:
+### Linux
 
 Activate the virtual environment and run the app:
 
@@ -141,6 +141,6 @@ It is also recommended but not required that each bot have a unique command pref
 
 #### music feature
 
-- **local_path** - A system path pointing to a local library of music. Ideally the directory structure will be **local_path/Artists/Albums/songs** But any structure should work. The music feature will search this directory for songs which match the **audio_types** every **search_frequency** seconds.
-- **search_frequency** - How frequently you want the music feature to search for new music. This value is in seconds. Default is 300 seconds
-- **audio_types** - The different audio formats you want the music feature to search for. These audio types must be readable by ffmpeg.
+  - **local_path** - A system path pointing to a local library of music. Ideally the directory structure will be **local_path/Artists/Albums/songs** But any structure should work. The music feature will search this directory for songs which match the **audio_types** every **search_frequency** seconds.
+  - **search_frequency** - How frequently you want the music feature to search for new music. This value is in seconds. Default is 300 seconds
+  - **audio_types** - The different audio formats you want the music feature to search for. These audio types must be readable by ffmpeg.
