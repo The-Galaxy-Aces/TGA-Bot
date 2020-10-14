@@ -56,6 +56,11 @@ install_debian(){
   apt remove -y $DEBIAN_BUILD_PKGS
 }
 
+if [ "$(whoami)" != "root" ]; then
+  echo "This script needs to be run as root."
+  exit 1
+fi
+
 if [ "$SYSTEM" = "alpine" ]; then
   install_alpine
 else
