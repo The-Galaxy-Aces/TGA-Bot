@@ -36,7 +36,7 @@ def main():
         raise OSError(f"{config_file} not found or missing")
 
     # Read in config file
-    with open(config_file, 'r') as config_yaml:
+    with open(config_file, 'r', encoding='UTF-8') as config_yaml:
         CONFIG = yaml.full_load(config_yaml)
 
     for botConfig in CONFIG:

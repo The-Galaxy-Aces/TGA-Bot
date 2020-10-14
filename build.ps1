@@ -5,6 +5,14 @@ IF (-NOT (Test-Path -Path ".\venv")) {
     python -m venv venv
 }
 
+Write-Information "Attempting to deactivate any currently running venv"
+TRY {
+  deactivate
+  Write-Information "Venv deactivated"
+} CATCH {
+  Write-Information "No Venv currently running"
+}
+
 Write-Information "Starting up venv..."
 .\venv\scripts\activate
 
@@ -18,7 +26,7 @@ IF (Test-Path -Path ".\requirements.txt") {
 
 IF (-NOT (Test-Path "config.yaml")) {
     Write-Information "File not found: config.yaml. Now creating default config file..."
-    Get-Content defaults.yaml > config.yaml
+    Get-Content defaults.yaml -Encoding Unicode | Out-File config.yaml
 }
 
 Write-Information "Closing down venv..."
