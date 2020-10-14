@@ -6,7 +6,13 @@
 
 ### Linux:
 
-No special instructions. Skip to [Build the Bot](#build-the-bot)
+Clone the repo:
+
+```sh
+git clone git@github.com:Travisivart/TGA-Bot.git
+```
+
+Skip to [Build the Bot](#build-the-bot)
 
 ### Windows:
 
@@ -61,9 +67,12 @@ At the very least you will need to include:
 
 ## Start the Bot
 
-Run this command from your shell:
+### Linux:
+
+Activate the virtual environment and run the app:
 
 ```sh
+. venv/bin/activate
 python main.py
 ```
 
