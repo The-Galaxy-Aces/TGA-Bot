@@ -26,7 +26,7 @@ IF (Test-Path -Path ".\requirements.txt") {
 
 IF (-NOT (Test-Path "config.yaml")) {
     Write-Information "File not found: config.yaml. Now creating default config file..."
-    Get-Content defaults.yaml -Encoding Unicode | Out-File config.yaml
+    Get-Content defaults.yaml | Out-File config.yaml -Encoding UTF8
 }
 
 Write-Information "Closing down venv..."
