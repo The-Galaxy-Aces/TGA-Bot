@@ -58,9 +58,10 @@ class Insult(TGACog):
         if ctx.message.author == self.bot.user:
             return
         else:
-            for mention in ctx.message.mentions:
-                await ctx.message.channel.send(
-                    f"{mention.mention} {self.getInsult()}")
+            if ctx.invoked_subcommand is None:
+                for mention in ctx.message.mentions:
+                    await ctx.message.channel.send(
+                        f"{mention.mention} {self.getInsult()}")
 
     @insult.command(aliases=['t'])
     async def torment(self, ctx):
