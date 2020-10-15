@@ -52,7 +52,7 @@ class Bot(discord.ext.commands.Bot):
     def setupLogging(self):
         # Logging setup
         try:
-            if self.OSTYPE == "win":
+            if self.OSTYPE == "win32":
                 logPath = "logs"
             else:
                 logPath = f"{os.sep}var{os.sep}log{os.sep}discordbot"
