@@ -49,7 +49,7 @@ Otherwise you will need to follow the instructions on the [ffmpeg site](https://
 
 ```powershell
 # Clone the repo
-git clone git@github.com:Travisivart/TGA-Bot.git && cd TGA-Bot
+git clone git@github.com:Travisivart/TGA-Bot.git; cd TGA-Bot
 
 # Build the virtual environment
 .\build.ps1
