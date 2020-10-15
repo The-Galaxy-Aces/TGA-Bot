@@ -24,7 +24,7 @@ class Music(TGACog):
         self.currQueue = []
         self.voiceClient = ""
         self.currSong = 0
-        self.currVolume = 1.0
+        self.currVolume = 0.02
         self.didPrevExecute = False
         self.searchPattern = ""
         self.localLibrary = {}
@@ -278,15 +278,17 @@ class Music(TGACog):
         Adjusts the volume to the specified level.
         Where <args> is an integer between 0 and 100
         '''
-        try:
-            myVolume = int(args)
-            if myVolume >= 0 and myVolume <= 100:
-                self.voiceClient.source.volume = self.currVolume = myVolume / 100
-            else:
-                raise Exception("Invalid Value")
-        except Exception:
-            await ctx.message.channel.send(
-                "For volume please enter a value between 0 and 100.")
+        if self.voiceClient and self.voiceClient.is_connected():
+            try:
+                myVolume = int(args)
+                if myVolume >= 0 and myVolume <= 100:
+                    # Divide by 1000 because even at volume 1, it was always far too loud
+                    self.voiceClient.source.volume = self.currVolume = myVolume / 1000
+                else:
+                    raise Exception("Invalid Value")
+            except Exception:
+                await ctx.message.channel.send(
+                    "For volume please enter a value between 0 and 100.")
 
     @commands.command()
     async def come(self, ctx):
