@@ -99,7 +99,7 @@ class Music(TGACog):
         self.currSong += 1
         self.playNext()
 
-    @commands.command()
+    @commands.group(aliases=['m'])
     async def music(self, ctx, *args):
         '''
         Searches for an artist, album, or song and places
@@ -171,7 +171,7 @@ class Music(TGACog):
             f"```Now playing: {self.getSongMetadata(self.currQueue[self.currSong])}```"
         )
 
-    @commands.command()
+    @music.command(aliases=['q'])
     async def queue(self, ctx):
         '''
         Displays information about the current song queue.
@@ -196,7 +196,7 @@ class Music(TGACog):
                 ```The music queue is currently empty.```
                 ''')
 
-    @commands.command()
+    @music.command(aliases=['n'])
     async def next(self, ctx):
         '''
         Plays the next song in the queue.
@@ -215,7 +215,7 @@ class Music(TGACog):
                 f"```Playback complete. Use the {self.bot.command_prefix}music command to search for and playback more music.```"
             )
 
-    @commands.command()
+    @music.command(aliases=['p'])
     async def prev(self, ctx):
         '''
         Plays the previous song in the queue.
@@ -236,7 +236,7 @@ class Music(TGACog):
                 f"```Now playing: {self.getSongMetadata(self.currQueue[self.currSong + 1])}```"
             )
 
-    @commands.command()
+    @music.command(aliases=['s'])
     async def stop(self, ctx):
         '''
         Stop the audio stream and clear the music queue.
@@ -246,7 +246,7 @@ class Music(TGACog):
         self.voiceClient.stop()
         await self.voiceClient.disconnect()
 
-    @commands.command()
+    @music.command(aliases=['pa'])
     async def pause(self, ctx):
         '''
         Pauses the current song.
@@ -254,7 +254,7 @@ class Music(TGACog):
         if self.voiceClient.is_playing():
             self.voiceClient.pause()
 
-    @commands.command()
+    @music.command(aliases=['r'])
     async def resume(self, ctx):
         '''
         Resumes the current song.
@@ -262,7 +262,7 @@ class Music(TGACog):
         if self.voiceClient.is_paused():
             self.voiceClient.resume()
 
-    @commands.command()
+    @music.command(aliases=['cs'])
     async def currentSong(self, ctx):
         '''
         Displays metadata for the current song.
@@ -272,7 +272,7 @@ class Music(TGACog):
                 f"```Now playing: {self.getSongMetadata(self.currQueue[self.currSong])}```"
             )
 
-    @commands.command()
+    @music.command(aliases=['v'])
     async def volume(self, ctx, args):
         '''
         Adjusts the volume to the specified level.
@@ -288,7 +288,7 @@ class Music(TGACog):
             await ctx.message.channel.send(
                 "For volume please enter a value between 0 and 100.")
 
-    @commands.command()
+    @music.command(aliases=['c'])
     async def come(self, ctx):
         '''
         Moves the bot to the your current voice channel.
