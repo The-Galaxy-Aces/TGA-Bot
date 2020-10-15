@@ -279,11 +279,12 @@ class Music(TGACog):
         Where <args> is an integer between 0 and 100
         '''
         try:
-            myVolume = int(args)
-            if myVolume >= 0 and myVolume <= 100:
-                self.voiceClient.source.volume = self.currVolume = myVolume / 100
-            else:
-                raise Exception("Invalid Value")
+            if self.voiceClient and self.voiceClient.is_connected():
+                myVolume = int(args)
+                if myVolume >= 0 and myVolume <= 100:
+                    self.voiceClient.source.volume = self.currVolume = myVolume / 100
+                else:
+                    raise Exception("Invalid Value")
         except Exception:
             await ctx.message.channel.send(
                 "For volume please enter a value between 0 and 100.")
