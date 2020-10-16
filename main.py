@@ -37,7 +37,7 @@ def main():
     # Read in config file
     with open(config_file, 'r', encoding='UTF-8') as config_yaml:
         CONFIG = yaml.full_load(config_yaml)
-        
+
     if OSTYPE == 'win32':
         asyncio.set_event_loop_policy(
             asyncio.WindowsSelectorEventLoopPolicy())
