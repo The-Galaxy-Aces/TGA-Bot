@@ -1,10 +1,10 @@
 - bot_id: 1
-  name: 
-  token: 
+  name:
+  token:
   command_prefix: "!"
   logging:
     enabled: True
-    logging_level: DEBUG
+    logging_level: INFO
   enabled_features:
     insult:
       enabled: True
