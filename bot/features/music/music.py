@@ -100,7 +100,12 @@ class Music(TGACog):
         self.playNext()
 
     @commands.group(aliases=['m'])
-    async def music(self, ctx, *args):
+    async def music(self, ctx):
+        # TODO Send !help command to the channel, not sure how to make this happen yet
+        pass
+
+    @music.command(aliases=['p'])
+    async def play(self, ctx, *args):
         '''
         Searches for an artist, album, or song and places
         all the matches into the queue and starts playing.
@@ -215,8 +220,8 @@ class Music(TGACog):
                 f"```Playback complete. Use the {self.bot.command_prefix}music command to search for and playback more music.```"
             )
 
-    @music.command(aliases=['p'])
-    async def prev(self, ctx):
+    @music.command(aliases=['pr', 'prev'])
+    async def previous(self, ctx):
         '''
         Plays the previous song in the queue.
         '''
@@ -228,7 +233,7 @@ class Music(TGACog):
             await ctx.message.channel.send(
                 "```You're already at the beginning of the queue.```")
 
-    @prev.after_invoke
+    @previous.after_invoke
     async def after_prev(self, ctx):
         if self.didPrevExecute:
             self.didPrevExecute = False
@@ -262,8 +267,8 @@ class Music(TGACog):
         if self.voiceClient.is_paused():
             self.voiceClient.resume()
 
-    @music.command(aliases=['cs'])
-    async def currentSong(self, ctx):
+    @music.command(aliases=['cs', 'curr'])
+    async def current(self, ctx):
         '''
         Displays metadata for the current song.
         '''
