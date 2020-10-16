@@ -29,6 +29,7 @@ def main():
 
     # May replace with with platform.system() later
     OSTYPE = sys.platform
+
     # Check for config file
     if not os.path.exists(config_file):
         raise OSError(f"{config_file} not found or missing")
@@ -37,12 +38,13 @@ def main():
     with open(config_file, 'r', encoding='UTF-8') as config_yaml:
         CONFIG = yaml.full_load(config_yaml)
 
+    if OSTYPE == 'win32':
+        asyncio.set_event_loop_policy(
+            asyncio.WindowsSelectorEventLoopPolicy())
+    else:
+        asyncio.get_child_watcher()
+
     for botConfig in CONFIG:
-        if OSTYPE == 'win32':
-            asyncio.set_event_loop_policy(
-                asyncio.WindowsSelectorEventLoopPolicy())
-        else:
-            asyncio.get_child_watcher()
 
         loop = asyncio.get_event_loop()
 
