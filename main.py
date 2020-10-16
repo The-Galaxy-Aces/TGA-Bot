@@ -44,11 +44,12 @@ def main():
     else:
         asyncio.get_child_watcher()
 
-    for botConfig in CONFIG:
+    for bot_id, bot_config in enumerate(CONFIG, start=1):
+        bot_config.update({'bot_id': bot_id})
 
         loop = asyncio.get_event_loop()
 
-        bot = Bot(botConfig, OSTYPE)
+        bot = Bot(bot_config, OSTYPE)
         loop.create_task(threadedBot(bot))
 
         thread = threading.Thread(target=loopTheBot,
