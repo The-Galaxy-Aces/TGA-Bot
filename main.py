@@ -28,8 +28,7 @@ def main():
     config_file = "config.yaml"
 
     # May replace with with platform.system() later
-    OSTYPE = 'win' if sys.version_info[0] == 3 and sys.version_info[
-        1] >= 8 and sys.platform.startswith('win') else 'linux'
+    OSTYPE = sys.platform
 
     # Check for config file
     if not os.path.exists(config_file):
@@ -39,12 +38,13 @@ def main():
     with open(config_file, 'r', encoding='UTF-8') as config_yaml:
         CONFIG = yaml.full_load(config_yaml)
 
+    if OSTYPE == 'win32':
+        asyncio.set_event_loop_policy(
+            asyncio.WindowsSelectorEventLoopPolicy())
+    else:
+        asyncio.get_child_watcher()
+
     for botConfig in CONFIG:
-        if OSTYPE == 'win':
-            asyncio.set_event_loop_policy(
-                asyncio.WindowsSelectorEventLoopPolicy())
-        else:
-            asyncio.get_child_watcher()
 
         loop = asyncio.get_event_loop()
 
