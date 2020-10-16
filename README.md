@@ -98,12 +98,11 @@ Before it is able to run.
 ### Running Multiple Bots
 
 To run multiple bots on your server simply add additional bot configuration to your config.yaml like so.
-Keep in mind that each bot needs to have a unique id and should have a unique token.
+Keep in mind that each bot needs to have a unique token.
 It is also recommended but not required that each bot have a unique command prefix.
 
 ```yaml
-- bot_id: 1
-  name: The Galaxy Aces Bot
+- name: The Galaxy Aces Bot
   token: this_bots_token
   command_prefix: "!"
   logging:
@@ -127,8 +126,7 @@ It is also recommended but not required that each bot have a unique command pref
         - .ogg
         - .wav
         - .wmv
-- bot_id: 2
-  name: The Galaxy Aces Other Bot
+- name: The Galaxy Aces Other Bot
   token: this_other_bots_token
   command_prefix: .
   logging:
