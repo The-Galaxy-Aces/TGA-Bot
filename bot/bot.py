@@ -17,7 +17,7 @@ class Bot(discord.ext.commands.Bot):
 
         self.CONFIG = CONFIG
         self.OSTYPE = OSTYPE
-        self.cogList = []
+        self.cog_list = []
         self.thread = ""
         self.loop = ""
 
@@ -43,21 +43,21 @@ class Bot(discord.ext.commands.Bot):
         super().__init__(self.command_prefix)
 
         if self.logging:
-            self.setupLogging()
+            self.setup_logging()
 
-        self.enableFeatures()
+        self.enable_features()
 
         self.log.info("Bot initalized")
 
-    def setupLogging(self):
+    def setup_logging(self):
         # Logging setup
         try:
             if self.OSTYPE == "win32":
-                logPath = "logs"
+                log_path = "logs"
             else:
-                logPath = f"{os.sep}var{os.sep}log{os.sep}discordbot"
+                log_path = f"{os.sep}var{os.sep}log{os.sep}discord_bot"
 
-            os.mkdir(logPath)
+            os.mkdir(log_path)
         except FileExistsError:
             pass
         except Exception as e:
@@ -67,7 +67,7 @@ class Bot(discord.ext.commands.Bot):
 
         FORMAT = "%(asctime)s:%(levelname)s:%(name)s: %(message)s"
         DATE_STAMP = strftime("%Y-%m-%d", localtime())
-        FILE_NAME = f"{logPath}{os.sep}discordBot-{self.name}-{DATE_STAMP}.log"
+        FILE_NAME = f"{log_path}{os.sep}discord_bot-{self.name}-{DATE_STAMP}.log"
 
         self.log = logging.getLogger(f"{self.name} Logger")
         self.log.setLevel(self.CONFIG['logging']['logging_level'])
@@ -75,26 +75,25 @@ class Bot(discord.ext.commands.Bot):
         self.handler.setFormatter(logging.Formatter(FORMAT))
         self.log.addHandler(self.handler)
 
-    def enableFeatures(self):
+    def enable_features(self):
         print(f"{self.name} enabled features:", end="\n")
         for feature in self.enabled_features:
             if self.enabled_features[feature]["enabled"]:
                 cog = getattr(
-                    self, f"get{feature.capitalize()}", lambda:
-                    (_ for _ in ()).throw(
+                    self, f"get_{feature}", lambda: (_ for _ in ()).throw(
                         Exception(
                             f"Feature {feature} does not exist. Review config.yaml"
                         )))()
-                self.cogList.append(cog)
-                self.cogList[-1].enableCog()
+                self.cog_list.append(cog)
+                self.cog_list[-1].enable_cog()
                 print(f'  {feature}')
         print("")
 
     def get_token(self):
         return self.token
 
-    def getMusic(self):
+    def get_music(self):
         return Music(self)
 
-    def getInsult(self):
+    def get_insult(self):
         return Insult(self)

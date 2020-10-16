@@ -21,24 +21,24 @@ class Insult(TGACog):
         # TODO: ADD: https://generatorfun.com/insult-generator
 
         REQUIRED_PARAMS = []
-        self.processConfig(self.bot, REQUIRED_PARAMS)
+        self.process_config(self.bot, REQUIRED_PARAMS)
 
         self.uri = "https://evilinsult.com/generate_insult.php?lang=en&type=json"
-        self.myInsult = ""
+        self.my_insult = ""
 
-        self.tormentList = []
+        self.torment_list = []
 
-    def generateInsult(self):
+    def generate_insult(self):
         resp = requests.get(self.uri)
         if resp.status_code == 200:
-            self.myInsult = resp.json()["insult"]
+            self.my_insult = resp.json()["insult"]
         else:
             raise Exception(
                 "Insult.generate_insult: Error in request: Status Code!=200")
 
     def getInsult(self):
-        self.generateInsult()
-        return html.unescape(self.myInsult)
+        self.generate_insult()
+        return html.unescape(self.my_insult)
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -46,7 +46,7 @@ class Insult(TGACog):
         Activates on every message which is sent which the bot has access to read.
         '''
         # Torment a user if they exist in the torment list and sent the message.
-        for tormented in self.tormentList:
+        for tormented in self.torment_list:
             if tormented == message.author.mention:
                 await message.channel.send(f"{tormented} {self.getInsult()}")
 
@@ -69,9 +69,9 @@ class Insult(TGACog):
         Torments the mentioned user(s) by insulting them with every message.
         '''
         for mention in ctx.message.mentions:
-            if mention.mention not in self.tormentList \
+            if mention.mention not in self.torment_list \
                     and mention.mention != ctx.bot.user.mention:
-                self.tormentList.append(mention.mention)
+                self.torment_list.append(mention.mention)
 
     @insult.command(aliases=['u'])
     async def untorment(self, ctx):
@@ -79,7 +79,7 @@ class Insult(TGACog):
         Removes the endless torment from the mentioned user(s).
         '''
         for mention in ctx.message.mentions:
-            self.tormentList.remove(mention.mention)
+            self.torment_list.remove(mention.mention)
 
     @insult.error
     async def info_error(self, ctx, error):

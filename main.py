@@ -8,11 +8,11 @@ from bot.bot import Bot
 from bot.tgacli import TGACli
 
 
-async def threadedBot(bot):
+async def threaded_bot(bot):
     await bot.start(bot.get_token())
 
 
-def loopTheBot(loop):
+def loop_the_bot(loop):
     if not loop.is_running():
         loop.run_forever()
 
@@ -39,8 +39,7 @@ def main():
         CONFIG = yaml.full_load(config_yaml)
 
     if OSTYPE == 'win32':
-        asyncio.set_event_loop_policy(
-            asyncio.WindowsSelectorEventLoopPolicy())
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     else:
         asyncio.get_child_watcher()
 
@@ -50,9 +49,9 @@ def main():
         loop = asyncio.get_event_loop()
 
         bot = Bot(bot_config, OSTYPE)
-        loop.create_task(threadedBot(bot))
+        loop.create_task(threaded_bot(bot))
 
-        thread = threading.Thread(target=loopTheBot,
+        thread = threading.Thread(target=loop_the_bot,
                                   args=(loop, ),
                                   daemon=True)
         bot.thread = thread
