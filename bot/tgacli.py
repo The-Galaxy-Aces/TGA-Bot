@@ -17,12 +17,12 @@ class TGACli:
 
         self.OSTYPE = OSTYPE
         self.bots = bots
-        self.activeBot = 0
+        self.active_bot = 0
         self.exit = False
         self.ready = False
         '''The command map provides a simple integer to string mapping which allows for
         multiple different commands to all call the same function.'''
-        self.cmdMap = {
+        self.cmd_map = {
             "e": 0,
             "exit": 0,
             "q": 0,
@@ -34,40 +34,42 @@ class TGACli:
             "s": 3,
             "select": 3
         }
-        '''commandCall stores the references of the cmdMap to a function which each command
+        '''command_call stores the references of the cmd_map to a function which each command
         is mapped to'''
-        self.commandCall = {
+        self.command_call = {
             0: lambda cmd: self.quit(cmd),
             1: lambda cmd: self.help(cmd),
             2: lambda cmd: self.list(cmd),
             3: lambda cmd: self.select(cmd)
         }
 
-        self.thread = threading.Thread(target=self.inputLoop, args=())
+        self.thread = threading.Thread(target=self.input_loop, args=())
 
         self.thread.start()
 
-    def inputLoop(self):
+    def input_loop(self):
         # Wait for the bots to be ready
         while (not self.ready):
-            if all(all(cog.ready for cog in bot.cogList) for bot in self.bots):
+            if all(
+                    all(cog.ready for cog in bot.cog_list)
+                    for bot in self.bots):
                 self.ready = True
             else:
                 sleep(1)
 
         while (not self.exit):
-            activeBotName = self.bots[self.activeBot].name
-            cmd = input(f"\n{activeBotName}: >>> ")
-            self.parseCommand(cmd)
+            active_bot_name = self.bots[self.active_bot].name
+            cmd = input(f"\n{active_bot_name}: >>> ")
+            self.parse_command(cmd)
 
-    def parseCommand(self, cmd):
+    def parse_command(self, cmd):
 
         if cmd:
             try:
                 cmdList = cmd.split()
-                if cmdList[0].lower() in self.cmdMap:
-                    self.commandCall.get(self.cmdMap.get(cmdList[0].lower()))(
-                        cmdList[1:])
+                if cmdList[0].lower() in self.cmd_map:
+                    self.command_call.get(self.cmd_map.get(
+                        cmdList[0].lower()))(cmdList[1:])
             except Exception as e:
                 print(e)
 
@@ -95,10 +97,10 @@ class TGACli:
             for bot in self.bots:
                 print(f"{bot.bot_id}\t{bot.name}")
         elif cmd[0] == "cogs":
-            for cog in self.bots[self.activeBot].cogList:
+            for cog in self.bots[self.active_bot].cog_list:
                 print(cog.__class__.__name__)
         else:
-            self.invalidCmd(cmd[0], "list")
+            self.invalid_cmd(cmd[0], "list")
 
     def select(self, cmd):
         '''
@@ -112,14 +114,14 @@ class TGACli:
         bot_selection = cmd[0]
         if bot_selection and bot_selection.isdigit(
         ) and int(bot_selection) <= len(self.bots):
-            self.activeBot = int(bot_selection) - 1
+            self.active_bot = int(bot_selection) - 1
         else:
             print(
                 f"{bot_selection} is an invalid selection. Please select a valid bot_id:"
             )
             self.list(cmd)
 
-    def invalidCmd(self, cmd, parent):
+    def invalid_cmd(self, cmd, parent):
         print(f"{cmd} is an invalid option for {parent}.")
 
     def help(self, cmd):

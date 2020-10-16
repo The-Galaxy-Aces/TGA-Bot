@@ -128,7 +128,7 @@ It is also recommended but not required that each bot have a unique command pref
         - .wmv
 - name: The Galaxy Aces Other Bot
   token: this_other_bots_token
-  command_prefix: .
+  command_prefix: "."
   logging:
     enabled: True
     logging_level: DEBUG
