@@ -7,6 +7,9 @@
 -   [Linux Install](#linux-install)
 -   [Windows Install](#windows-install)
 -   -   [Notes for windows users](#notes-for-windows-users)
+-   [Using the Bot](#using-the-bot)
+-   -   [Discord interface](#discord-interface)
+-   -   [CLI interface](#cli-interface)
 -   [Configuration](#configuration)
 -   -   [Minimum Configuration](#minimum-configuration)
 -   -   [Running Multiple Bots](#running-multiple-bots)
@@ -82,6 +85,30 @@ Python 3.9 for windows may give you an error such as:
 > error Microsoft Visual C++ 14.0 is required
 
 Visit [this link](https://www.scivision.dev/python-windows-visual-c-14-required/) for more details and how to resolve the issue:
+
+## Using the Bot
+
+Once the bot is running you will be able to interact with it in multiple ways.
+
+### Discord interface
+
+Your bot will need to either have permissions to a text-channel in your discord server, or users will have to message the bot directly in order to interact with it. If your bot correctly has access to a text channel, you will should see it listed in the list of online users.
+
+You can send your bot commands by typing: <command prefix> command. For example, if you wanted to play music and your bot's command prefix was !, you would type:
+
+!music play Daft Punk
+
+You can use !help to see the various commands and also use !help command to see the various subcommands under each command.
+
+### CLI interface
+
+The cli interface gives an administrator who is running the bot access to bot controls and commands without needing access to discord. WHen running the bot you will see a prompt like this:
+
+```sh
+The Galaxy Aces Bot: >>>
+```
+
+You can enter help at the prompt to list all the commands and perform various actions. Entering q or quit will shutdown the bot(s).
 
 ## Configuration
 
