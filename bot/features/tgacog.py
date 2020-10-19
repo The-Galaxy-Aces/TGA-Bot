@@ -15,6 +15,10 @@ class TGACog(commands.Cog):
         if MISSING_PARAMS:
             raise AssertionError(f"config.yaml missing {MISSING_PARAMS}")
 
+    def get_permissions(self, bot):
+        return bot.enabled_features[self.__class__.__name__.lower()].get(
+            'permissions')
+
     def enable_cog(self):
         self.bot.log.debug(f"Enable Cog {self.__class__.__name__.lower()}")
         self.bot.add_cog(self)

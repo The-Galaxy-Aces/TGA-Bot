@@ -28,6 +28,22 @@ class Insult(TGACog):
 
         self.torment_list = []
 
+        self.permissions = self.get_permissions(self.bot)
+
+    def check_permissions():
+        async def predicate(ctx, *args):
+            if ctx.invoked_subcommand:
+                cmd_permissions = ctx.cog.permissions.get(
+                    ctx.invoked_subcommand.name)
+            else:
+                cmd_permissions = ctx.cog.permissions.get(ctx.command.name)
+            for role in ctx.author.roles:
+                if role.name in cmd_permissions:
+                    return True
+            return False
+
+        return commands.check(predicate)
+
     def generate_insult(self):
         resp = requests.get(self.uri)
         if resp.status_code == 200:
@@ -36,7 +52,7 @@ class Insult(TGACog):
             raise Exception(
                 "Insult.generate_insult: Error in request: Status Code!=200")
 
-    def getInsult(self):
+    def get_insult(self):
         self.generate_insult()
         return html.unescape(self.my_insult)
 
@@ -48,9 +64,10 @@ class Insult(TGACog):
         # Torment a user if they exist in the torment list and sent the message.
         for tormented in self.torment_list:
             if tormented == message.author.mention:
-                await message.channel.send(f"{tormented} {self.getInsult()}")
+                await message.channel.send(f"{tormented} {self.get_insult()}")
 
     @commands.group(aliases=['i'])
+    @check_permissions()
     async def insult(self, ctx):
         '''
         Generates an insult against the mentioned user(s)
@@ -61,9 +78,10 @@ class Insult(TGACog):
             if ctx.invoked_subcommand is None:
                 for mention in ctx.message.mentions:
                     await ctx.message.channel.send(
-                        f"{mention.mention} {self.getInsult()}")
+                        f"{mention.mention} {self.get_insult()}")
 
     @insult.command(aliases=['t'])
+    @check_permissions()
     async def torment(self, ctx):
         '''
         Torments the mentioned user(s) by insulting them with every message.
@@ -74,6 +92,7 @@ class Insult(TGACog):
                 self.torment_list.append(mention.mention)
 
     @insult.command(aliases=['u'])
+    @check_permissions()
     async def untorment(self, ctx):
         '''
         Removes the endless torment from the mentioned user(s).
@@ -85,3 +104,6 @@ class Insult(TGACog):
     async def info_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
             await ctx.message.channel.send(f"Error in Insult: {error}")
+        elif isinstance(error, commands.CheckFailure):
+            await ctx.message.channel.send(
+                f"You do not have permissions to use that command.")
