@@ -100,7 +100,7 @@ You can send your bot commands by typing: `<command prefix>` command. For exampl
 
 You can use !help to see the various commands and also use !help command to see the various subcommands under each command.
 
-### CLI interface
+### Command Line Interface (CLI)
 
 The CLI gives an administrator who is running the bot access to bot controls and commands without needing access to discord. When running the bot you will see a prompt like this:
 
