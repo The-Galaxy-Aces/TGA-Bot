@@ -94,7 +94,7 @@ Once the bot is running you will be able to interact with it in multiple ways.
 
 Your bot will need to either have permissions to a text-channel in your discord server, or users will have to message the bot directly in order to interact with it. If your bot correctly has access to a text channel, you will should see it listed in the list of online users.
 
-You can send your bot commands by typing: <command prefix> command. For example, if you wanted to play music and your bot's command prefix was !, you would type:
+You can send your bot commands by typing: `<command prefix>` command. For example, if you wanted to play music and your bot's command prefix were !, you would type:
 
 `!music play Daft Punk`
 
