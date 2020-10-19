@@ -102,7 +102,7 @@ You can use !help to see the various commands and also use !help command to see 
 
 ### CLI interface
 
-The cli interface gives an administrator who is running the bot access to bot controls and commands without needing access to discord. WHen running the bot you will see a prompt like this:
+The CLI gives an administrator who is running the bot access to bot controls and commands without needing access to discord. When running the bot you will see a prompt like this:
 
 ```sh
 The Galaxy Aces Bot: >>>
