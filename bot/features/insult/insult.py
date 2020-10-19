@@ -11,10 +11,9 @@ def check_permissions():
                 ctx.invoked_subcommand.name)
         else:
             cmd_permissions = ctx.cog.permissions.get(ctx.command.name)
-        for role in ctx.author.roles:
-            if role.name in cmd_permissions:
-                return True
-        return False
+
+        return any(role for role in ctx.author.roles
+                   if role.name in cmd_permissions)
 
     return commands.check(predicate)
 
@@ -102,7 +101,9 @@ class Insult(TGACog):
             self.torment_list.remove(mention.mention)
 
     @insult.error
-    async def info_error(self, ctx, error):
+    @torment.error
+    @untorment.error
+    async def insult_cmd_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
             await ctx.message.channel.send(f"Error in Insult: {error}")
         elif isinstance(error, commands.CheckFailure):
