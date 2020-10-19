@@ -9,7 +9,7 @@
 -   -   [Notes for windows users](#notes-for-windows-users)
 -   [Using the Bot](#using-the-bot)
 -   -   [Discord interface](#discord-interface)
--   -   [CLI interface](#cli-interface)
+-   -   [Command Line Interface (CLI)](#command-line-interface-cli)
 -   [Configuration](#configuration)
 -   -   [Minimum Configuration](#minimum-configuration)
 -   -   [Running Multiple Bots](#running-multiple-bots)
@@ -94,15 +94,15 @@ Once the bot is running you will be able to interact with it in multiple ways.
 
 Your bot will need to either have permissions to a text-channel in your discord server, or users will have to message the bot directly in order to interact with it. If your bot correctly has access to a text channel, you will should see it listed in the list of online users.
 
-You can send your bot commands by typing: <command prefix> command. For example, if you wanted to play music and your bot's command prefix was !, you would type:
+You can send your bot commands by typing: `<command prefix> command`. For example, if you wanted to play music and your bot's command prefix were !, you would type:
 
-!music play Daft Punk
+`!music play Daft Punk`
 
-You can use !help to see the various commands and also use !help command to see the various subcommands under each command.
+You can use `!help` to see the various commands and also use !help command to see the various subcommands under each command.
 
-### CLI interface
+### Command Line Interface (CLI)
 
-The cli interface gives an administrator who is running the bot access to bot controls and commands without needing access to discord. WHen running the bot you will see a prompt like this:
+The CLI gives an administrator who is running the bot access to bot controls and commands without needing access to discord. When running the bot you will see a prompt like this:
 
 ```sh
 The Galaxy Aces Bot: >>>
