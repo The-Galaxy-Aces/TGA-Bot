@@ -4,6 +4,21 @@ from discord.ext import commands
 from bot.features.tgacog import TGACog
 
 
+def check_permissions():
+    async def predicate(ctx, *args):
+        if ctx.invoked_subcommand:
+            cmd_permissions = ctx.cog.permissions.get(
+                ctx.invoked_subcommand.name)
+        else:
+            cmd_permissions = ctx.cog.permissions.get(ctx.command.name)
+        for role in ctx.author.roles:
+            if role.name in cmd_permissions:
+                return True
+        return False
+
+    return commands.check(predicate)
+
+
 class Insult(TGACog):
     '''
     Auto generate some insults and hurt your friends.
@@ -29,20 +44,6 @@ class Insult(TGACog):
         self.torment_list = []
 
         self.permissions = self.get_permissions(self.bot)
-
-    def check_permissions():
-        async def predicate(ctx, *args):
-            if ctx.invoked_subcommand:
-                cmd_permissions = ctx.cog.permissions.get(
-                    ctx.invoked_subcommand.name)
-            else:
-                cmd_permissions = ctx.cog.permissions.get(ctx.command.name)
-            for role in ctx.author.roles:
-                if role.name in cmd_permissions:
-                    return True
-            return False
-
-        return commands.check(predicate)
 
     def generate_insult(self):
         resp = requests.get(self.uri)
@@ -106,4 +107,4 @@ class Insult(TGACog):
             await ctx.message.channel.send(f"Error in Insult: {error}")
         elif isinstance(error, commands.CheckFailure):
             await ctx.message.channel.send(
-                f"You do not have permissions to use that command.")
+                "You do not have permissions to use that command.")
