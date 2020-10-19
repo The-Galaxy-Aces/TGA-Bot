@@ -96,7 +96,7 @@ Your bot will need to either have permissions to a text-channel in your discord 
 
 You can send your bot commands by typing: <command prefix> command. For example, if you wanted to play music and your bot's command prefix was !, you would type:
 
-!music play Daft Punk
+`!music play Daft Punk`
 
 You can use !help to see the various commands and also use !help command to see the various subcommands under each command.
 
