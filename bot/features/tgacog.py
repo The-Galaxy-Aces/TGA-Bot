@@ -15,6 +15,10 @@ class TGACog(commands.Cog):
         if MISSING_PARAMS:
             raise AssertionError(f"config.yaml missing {MISSING_PARAMS}")
 
+    def get_permissions(self, bot):
+        return bot.enabled_features[self.__class__.__name__.lower()].get(
+            'permissions')
+
     def enable_cog(self):
         self.bot.log.debug(f"Enable Cog {self.__class__.__name__.lower()}")
         self.bot.add_cog(self)
@@ -27,3 +31,13 @@ class TGACog(commands.Cog):
     async def on_ready(self):
         print(f"{self.bot.name} {self.__class__.__name__.lower()} is ready!")
         self.ready = True
+
+    async def handle_command_error(self, ctx, error):
+        if isinstance(error, commands.BadArgument):
+            await ctx.message.channel.send(
+                f"Error in {self.__class__.__name__}: {error}")
+        elif isinstance(error, commands.CheckFailure):
+            await ctx.message.channel.send(
+                "You do not have permissions to use that command.")
+        else:
+            self.bot.log.error(f"handle_command_error: {error}")

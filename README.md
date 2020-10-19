@@ -12,10 +12,12 @@
 -   -   [Command Line Interface (CLI)](#command-line-interface-cli)
 -   [Configuration](#configuration)
 -   -   [Minimum Configuration](#minimum-configuration)
+-   -   [Permissions](#permissions)
 -   -   [Running Multiple Bots](#running-multiple-bots)
 -   [Appendix](#appendix)
 -   -   [Core bot parameters](#core-bot-parameters)
 -   -   [Music Feature](#music-feature)
+-   -   [Shared feature parameters](#shared-feature-parameters)
 
 ## Linux Install
 
@@ -122,6 +124,24 @@ Your config.yaml file will at minimum need:
 
 Before it is able to run.
 
+### Permissions
+
+Permissions allow you to configure which roles can use which commands for each feature. For example, if you wanted everyone to be able to use the insult command then you would have a single line with "@everyone" as the role under the permission insult. If you only wanted users with a certain role to use torment, you would list only that role under the permission torment. You can also list multiple roles if desired. The default if no roles are listed is to disallow the command.
+
+Example:
+
+```yaml
+permissions:
+  insult:
+    - "@everyone"
+  torment:
+    - Server Booster
+  untorment:
+    - Server Booster
+    - Admin
+
+```
+
 ### Running Multiple Bots
 
 To run multiple bots on your server simply add additional bot configuration to your config.yaml like so.
@@ -139,11 +159,17 @@ It is also recommended but not required that each bot have a unique command pref
     insult:
       enabled: True
       permissions:
-        - everyone
+        insult:
+          - "@everyone"
+        torment:
+          - "@everyone"
+        untorment:
+          - "@everyone"
     music:
       enabled: True
       permissions:
-        - everyone
+        play:
+          - "@everyone"
       local_path: /music
       search_frequency: 300
       audio_types:
@@ -163,11 +189,17 @@ It is also recommended but not required that each bot have a unique command pref
     insult:
       enabled: True
       permissions:
-        - everyone
+        insult:
+          - "@everyone"
+        torment:
+          - "@everyone"
+        untorment:
+          - "@everyone"
     music:
       enabled: True
       permissions:
-        - everyone
+        play:
+          - "@everyone"
       local_path: /music
       search_frequency: 300
       audio_types:
@@ -196,3 +228,7 @@ It is also recommended but not required that each bot have a unique command pref
 -   **local_path** - A system path pointing to a local library of music. Ideally the directory structure will be **local_path/Artists/Albums/songs** But any structure should work. The music feature will search this directory for songs which match the **audio_types** every **search_frequency** seconds.
 -   **search_frequency** - How frequently you want the music feature to search for new music. This value is in seconds. Default is 300 seconds (5 minutes)
 -   **audio_types** - The different audio formats you want the music feature to search for. These audio types must be readable by ffmpeg.
+
+#### Shared feature parameters
+
+-   **permissions** - Permissions are setup on a command by command basis and each command can have zero or more roles associated with it. Under each command, you can add an additional role which will grant any users with that role access to use the feature. If no permissions are listed for a command, then that command will not be useable by any users. Special roles such as @everyone must be surrounded by double quotes: "@everyone"

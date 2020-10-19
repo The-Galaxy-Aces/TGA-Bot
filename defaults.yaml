@@ -8,11 +8,17 @@
     insult:
       enabled: True
       permissions:
-        - everyone
+        insult:
+          - "@everyone"
+        torment:
+          - "@everyone"
+        untorment:
+          - "@everyone"
     music:
       enabled: True
       permissions:
-        - everyone
+        play:
+          - "@everyone"
       local_path: /music
       search_frequency: 300
       audio_types:
