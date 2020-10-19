@@ -141,7 +141,27 @@ It is also recommended but not required that each bot have a unique command pref
     music:
       enabled: True
       permissions:
+        music:
+          - "@everyone"
         play:
+          - "@everyone"
+        queue:
+          - "@everyone"
+        next:
+          - "@everyone"
+        previous:
+          - "@everyone"
+        stop:
+          - "@everyone"
+        pause:
+          - "@everyone"
+        resume:
+          - "@everyone"
+        current:
+          - "@everyone"
+        volume:
+          - "@everyone"
+        come:
           - "@everyone"
       local_path: /music
       search_frequency: 300
@@ -165,13 +185,35 @@ It is also recommended but not required that each bot have a unique command pref
         insult:
           - "@everyone"
         torment:
-          - "@everyone"
+          - "Admin"
+          - "Server Booster"
         untorment:
-          - "@everyone"
+          - "Admin"
+          - "Server Booster"
     music:
       enabled: True
       permissions:
+        music:
+          - "@everyone"
         play:
+          - "@everyone"
+        queue:
+          - "@everyone"
+        next:
+          - "@everyone"
+        previous:
+          - "@everyone"
+        stop:
+          - "@everyone"
+        pause:
+          - "@everyone"
+        resume:
+          - "@everyone"
+        current:
+          - "@everyone"
+        volume:
+          - "@everyone"
+        come:
           - "@everyone"
       local_path: /music
       search_frequency: 300

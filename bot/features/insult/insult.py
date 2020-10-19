@@ -11,10 +11,9 @@ def check_permissions():
                 ctx.invoked_subcommand.name)
         else:
             cmd_permissions = ctx.cog.permissions.get(ctx.command.name)
-        for role in ctx.author.roles:
-            if role.name in cmd_permissions:
-                return True
-        return False
+
+        return any(role for role in ctx.author.roles
+                   if role.name in cmd_permissions)
 
     return commands.check(predicate)
 
