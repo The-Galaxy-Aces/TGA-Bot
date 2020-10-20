@@ -7,7 +7,7 @@ class TGACog(commands.Cog):
         self._last_member = None
         self.ready = False
 
-        self.cog_name = self.__class__.__name__.lower()
+        self.COG_NAME = self.__class__.__name__.lower()
         self.CONFIG = bot.enabled_features[self.cog_name]
 
         # Load permissions
@@ -25,16 +25,16 @@ class TGACog(commands.Cog):
         return self.CONFIG.get('permissions')
 
     def enable_cog(self):
-        self.bot.log.debug(f"Enable Cog {self.cog_name}")
+        self.bot.log.debug(f"Enable Cog {self.COG_NAME}")
         self.bot.add_cog(self)
 
     def disable_cog(self):
-        self.bot.log.debug(f"Disable Cog {self.cog_name}")
+        self.bot.log.debug(f"Disable Cog {self.COG_NAME}")
         self.bot.remove_cog(self)
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print(f"{self.bot.name} {self.cog_name} is ready!")
+        print(f"{self.bot.name} {self.COG_NAME} is ready!")
         self.ready = True
 
     async def handle_command_error(self, ctx, error):
