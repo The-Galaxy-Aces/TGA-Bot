@@ -307,6 +307,20 @@ class Music(TGACog):
                 f"```Now playing: {self.get_song_metadata(self.curr_queue[self.curr_song])}```"
             )
 
+    @music.command(aliases=['sh'])
+    @TGACog.check_permissions()
+    async def shuffle(self, ctx):
+        '''
+        Shuffles the current music queue. The currently playing song is moved to the
+        beginning of the queue and the rest of the queue is shuffled.
+        '''
+        if self.curr_queue:
+            current_song = self.curr_queue[self.curr_song]
+            random.shuffle(self.curr_queue)
+            self.curr_queue.remove(current_song)
+            self.curr_queue.insert(0, current_song)
+            self.curr_song = 0
+
     @music.command(aliases=['v'])
     @TGACog.check_permissions()
     async def volume(self, ctx, args):
@@ -319,7 +333,6 @@ class Music(TGACog):
                 my_volume = int(args)
                 if my_volume >= 0 and my_volume <= 100:
                     # Divide by 1000 because even at volume 1, it was always far too loud
-                    log
                     self.voice_client.source.volume = self.curr_volume = my_volume / 1000
                 else:
                     raise Exception(ValueError)

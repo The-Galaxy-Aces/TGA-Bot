@@ -35,6 +35,8 @@
           - "@everyone"
         current:
           - "@everyone"
+        shuffle:
+          - "@everyone"
         volume:
           - "@everyone"
         come:
