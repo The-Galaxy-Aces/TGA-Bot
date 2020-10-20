@@ -7,6 +7,9 @@ class TGACog(commands.Cog):
         self._last_member = None
         self.ready = False
 
+        # Load permissions
+        self.permissions = self.get_permissions(self.bot)
+
     def process_config(self, bot, REQUIRED_PARAMS):
 
         self.CONFIG = bot.enabled_features[self.__class__.__name__.lower()]

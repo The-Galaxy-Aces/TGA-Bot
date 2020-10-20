@@ -38,9 +38,6 @@ class Music(TGACog):
         self.audio_types = self.CONFIG['audio_types']
         self.search_frequency = self.CONFIG['search_frequency']  # In seconds
 
-        # Load permissions
-        self.permissions = self.get_permissions(self.bot)
-
         # Only create the thread to search the local library if it is enabled
         if self.local_path:
             self.search_thread = threading.Thread(target=self.searching_thread,

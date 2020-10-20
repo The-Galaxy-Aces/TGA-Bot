@@ -26,8 +26,6 @@ class Insult(TGACog):
 
         self.torment_list = []
 
-        self.permissions = self.get_permissions(self.bot)
-
     def generate_insult(self):
         resp = requests.get(self.uri)
         if resp.status_code == 200:
