@@ -15,10 +15,9 @@ class Music(TGACog):
     Sit back and enjoy some chill tunes
     """
     def __init__(self, bot):
+
+        super().__init__(bot)
         # Required for the bot:
-        self.bot = bot
-        self._last_member = None
-        self.ready = False
 
         # Used for music playback and functions
         self.curr_queue = []
