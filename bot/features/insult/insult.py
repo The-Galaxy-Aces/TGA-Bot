@@ -101,7 +101,9 @@ class Insult(TGACog):
             self.torment_list.remove(mention.mention)
 
     @insult.error
-    async def info_error(self, ctx, error):
+    @torment.error
+    @untorment.error
+    async def insult_cmd_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
             await ctx.message.channel.send(f"Error in Insult: {error}")
         elif isinstance(error, commands.CheckFailure):
