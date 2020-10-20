@@ -41,3 +41,16 @@ class TGACog(commands.Cog):
                 "You do not have permissions to use that command.")
         else:
             self.bot.log.error(f"handle_command_error: {error}")
+
+    def check_permissions():
+        async def predicate(ctx, *args):
+            if ctx.invoked_subcommand:
+                cmd_permissions = ctx.cog.permissions.get(
+                    ctx.invoked_subcommand.name)
+            else:
+                cmd_permissions = ctx.cog.permissions.get(ctx.command.name)
+
+            return any(role for role in ctx.author.roles
+                       if role.name in cmd_permissions)
+
+        return commands.check(predicate)
