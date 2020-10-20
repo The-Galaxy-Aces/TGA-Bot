@@ -8,7 +8,7 @@ class TGACog(commands.Cog):
         self.ready = False
 
         self.COG_NAME = self.__class__.__name__.lower()
-        self.CONFIG = bot.enabled_features[self.cog_name]
+        self.CONFIG = bot.enabled_features[self.COG_NAME]
 
         # Load permissions
         self.permissions = self.get_permissions(self.bot)
