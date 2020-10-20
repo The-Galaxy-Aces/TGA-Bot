@@ -17,7 +17,27 @@
     music:
       enabled: True
       permissions:
+        music:
+          - "@everyone"
         play:
+          - "@everyone"
+        queue:
+          - "@everyone"
+        next:
+          - "@everyone"
+        previous:
+          - "@everyone"
+        stop:
+          - "@everyone"
+        pause:
+          - "@everyone"
+        resume:
+          - "@everyone"
+        current:
+          - "@everyone"
+        volume:
+          - "@everyone"
+        come:
           - "@everyone"
       local_path: /music
       search_frequency: 300
