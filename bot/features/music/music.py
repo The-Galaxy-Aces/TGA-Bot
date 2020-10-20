@@ -319,7 +319,6 @@ class Music(TGACog):
                 my_volume = int(args)
                 if my_volume >= 0 and my_volume <= 100:
                     # Divide by 1000 because even at volume 1, it was always far too loud
-                    log
                     self.voice_client.source.volume = self.curr_volume = my_volume / 1000
                 else:
                     raise Exception(ValueError)
