@@ -6,6 +6,7 @@ from time import localtime, strftime
 
 from bot.features.insult.insult import Insult
 from bot.features.music.music import Music
+from bot.features.utility.utility import Utility
 
 
 class Bot(discord.ext.commands.Bot):
@@ -97,3 +98,6 @@ class Bot(discord.ext.commands.Bot):
 
     def get_insult(self):
         return Insult(self)
+
+    def get_utility(self):
+        return Utility(self)

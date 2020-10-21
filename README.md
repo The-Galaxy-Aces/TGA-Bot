@@ -201,6 +201,13 @@ It is also recommended but not required that each bot have a unique command pref
         - .ogg
         - .wav
         - .wmv
+    utility:
+      enabled: True
+      permissions:
+        utility:
+          - "@everyone"
+        roll:
+          - "@everyone"
 - name: The Galaxy Aces Other Bot
   token: this_other_bots_token
   command_prefix: "."
@@ -255,6 +262,13 @@ It is also recommended but not required that each bot have a unique command pref
         - .ogg
         - .wav
         - .wmv
+    utility:
+      enabled: True
+      permissions:
+        utility:
+          - "@everyone"
+        roll:
+          - "@everyone"
 ```
 
 ## Appendix
