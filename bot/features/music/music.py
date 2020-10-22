@@ -315,16 +315,16 @@ class Music(TGACog):
         Shuffles the current music queue. The currently playing song is moved to the
         beginning of the queue and the rest of the queue is shuffled.
         '''
-        if self.curr_queue:
-            current_song = self.curr_queue[self.curr_song]
-            random.shuffle(self.curr_queue)
-            self.curr_queue.remove(current_song)
-            self.curr_queue.insert(0, current_song)
-            self.curr_song = 0
-            await ctx.message.channel.send(
-                f"***Shuffled:***{self._build_queue_messsage()}")
-        else:
-            await ctx.message.channel.send("Nothing to shuffle.")
+        if not self.curr_queue:
+            return await ctx.message.channel.send("Nothing to shuffle.")
+
+        current_song = self.curr_queue[self.curr_song]
+        random.shuffle(self.curr_queue)
+        self.curr_queue.remove(current_song)
+        self.curr_queue.insert(0, current_song)
+        self.curr_song = 0
+        await ctx.message.channel.send(
+            f"***Shuffled:***{self._build_queue_messsage()}")
 
     @music.command(aliases=['v'])
     @TGACog.check_permissions()
