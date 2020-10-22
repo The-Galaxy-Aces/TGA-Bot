@@ -15,10 +15,9 @@ class Music(TGACog):
     Sit back and enjoy some chill tunes
     """
     def __init__(self, bot):
+
+        super().__init__(bot)
         # Required for the bot:
-        self.bot = bot
-        self._last_member = None
-        self.ready = False
 
         # Used for music playback and functions
         self.curr_queue = []
@@ -38,9 +37,6 @@ class Music(TGACog):
         self.local_path = self.CONFIG['local_path']
         self.audio_types = self.CONFIG['audio_types']
         self.search_frequency = self.CONFIG['search_frequency']  # In seconds
-
-        # Load permissions
-        self.permissions = self.get_permissions(self.bot)
 
         # Only create the thread to search the local library if it is enabled
         if self.local_path:

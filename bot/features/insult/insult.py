@@ -12,9 +12,7 @@ class Insult(TGACog):
         """
         Don't let the mean insults hurt your feelings
         """
-        self.bot = bot
-        self._last_member = None
-        self.ready = False
+        super().__init__(bot)
 
         # TODO: allow for a variety of insults from different APIs
         # TODO: ADD: https://insult.mattbas.org/api
@@ -27,8 +25,6 @@ class Insult(TGACog):
         self.my_insult = ""
 
         self.torment_list = []
-
-        self.permissions = self.get_permissions(self.bot)
 
     def generate_insult(self):
         resp = requests.get(self.uri)
