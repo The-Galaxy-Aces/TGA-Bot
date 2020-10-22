@@ -1,7 +1,6 @@
 import random
 from discord.ext import commands
 from bot.features.tgacog import TGACog
-import pprint
 
 
 class Utility(TGACog):
@@ -77,7 +76,6 @@ class Utility(TGACog):
         '''
         Assorted utility commands
         '''
-        pass
 
     @utility.command(aliases=['r'])
     @TGACog.check_permissions()
