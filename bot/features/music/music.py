@@ -220,10 +220,7 @@ class Music(TGACog):
         Displays information about the current song queue.
         '''
         if self.curr_queue:
-
-            queue_message = self._build_queue_messsage()
-
-            await ctx.message.channel.send(f"{queue_message}")
+            await ctx.message.channel.send(f"{self._build_queue_messsage()}")
         else:
             await ctx.message.channel.send('''
                 ```The music queue is currently empty.```
