@@ -327,7 +327,7 @@ class Music(TGACog):
             await ctx.message.channel.send(
                 f"***Shuffled:***{self._build_queue_messsage()}")
         else:
-            await ctx.message.channel.send(f"Nothing to shuffle.")
+            await ctx.message.channel.send("Nothing to shuffle.")
 
     @music.command(aliases=['v'])
     @TGACog.check_permissions()
