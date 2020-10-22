@@ -186,6 +186,8 @@ It is also recommended but not required that each bot have a unique command pref
           - "@everyone"
         current:
           - "@everyone"
+        shuffle:
+          - "@everyone"
         volume:
           - "@everyone"
         come:
@@ -237,6 +239,8 @@ It is also recommended but not required that each bot have a unique command pref
         resume:
           - "@everyone"
         current:
+          - "@everyone"
+        shuffle:
           - "@everyone"
         volume:
           - "@everyone"

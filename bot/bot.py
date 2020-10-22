@@ -80,14 +80,15 @@ class Bot(discord.ext.commands.Bot):
         for feature in self.enabled_features:
             if self.enabled_features[feature]["enabled"]:
                 cog = getattr(
-                    self, f"get_{feature}", lambda: (_ for _ in ()).throw(
-                        Exception(
-                            f"Feature {feature} does not exist. Review config.yaml"
-                        )))()
-                self.cog_list.append(cog)
-                self.cog_list[-1].enable_cog()
-                print(f'  {feature}')
-        print("")
+                    self, f"get_{feature}", lambda: self.log.error(
+                        f"Feature {feature} does not exist. Review config.yaml"
+                    ))()
+                if cog:
+                    self.cog_list.append(cog)
+                    self.cog_list[-1].enable_cog()
+                    print(f'  {feature}')
+
+        print()
 
     def get_token(self):
         return self.token
