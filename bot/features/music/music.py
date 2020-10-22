@@ -40,20 +40,20 @@ class Music(TGACog):
 
         # Only create the thread to search the local library if it is enabled
         if self.local_path:
-            self.search_thread = threading.Thread(target=self.searching_thread,
-                                                  daemon=True)
+            self.search_thread = threading.Thread(
+                target=self._searching_thread, daemon=True)
             self.search_thread.start()
 
-    def searching_thread(self):
+    def _searching_thread(self):
         '''
-        searching_thread is spawned as a seperate daemon thread from the main process
+        _searching_thread is spawned as a seperate daemon thread from the main process
         It executes its search every self.search_frequency seconds in order to update
         the music library as it is changed.
         # TODO this can probably be refactored with discord.py tasks:
         https://discordpy.readthedocs.io/en/latest/ext/tasks/index.html
         '''
         while (True):
-            self.bot.log.debug("searching_thread Executing")
+            self.bot.log.debug("_searching_thread Executing")
 
             self.local_library = []
             rootdir = self.local_path
@@ -66,7 +66,7 @@ class Music(TGACog):
                 self.local_library += filterd_files
 
             self.bot.log.debug(
-                f"searching_thread Completed. Loaded {len(self.local_library)} songs."
+                f"_searching_thread Completed. Loaded {len(self.local_library)} songs."
             )
 
             # inital_lock is used to lock the music function until the first search after
@@ -79,26 +79,52 @@ class Music(TGACog):
 
             sleep(self.search_frequency)
 
-    def search_library(self, pattern):
+    def _search_library(self, pattern):
 
         return [
             song for song in self.local_library
-            if fnmatch.fnmatch(f"{song}", f"*{pattern}*")
+            if fnmatch.fnmatch(f"{song.lower()}", f"*{pattern.lower()}*")
         ]
 
-    def play_next(self):
+    def _play_next(self):
         if self.curr_song >= 0 and self.curr_song < len(self.curr_queue):
             self.voice_client.play(discord.PCMVolumeTransformer(
                 discord.FFmpegPCMAudio(self.curr_queue[self.curr_song],
                                        options="-loglevel panic"),
                 self.curr_volume),
-                                   after=lambda e: self.finished_song())
+                                   after=lambda e: self._finished_song())
         else:
             self.voice_client.stop()
 
-    def finished_song(self):
+    def _finished_song(self):
         self.curr_song += 1
-        self.play_next()
+        self._play_next()
+
+    async def _check_if_user_is_voice_connected(self, ctx):
+        if ctx.message.author.voice is None:
+
+            await ctx.message.channel.send(
+                "```You need to join a voice channel in order to listen to music.```"
+            )
+            return False
+        return True
+
+    async def _check_voice_channel_connectivity(self, ctx):
+        try:
+            await ctx.bot.fetch_channel(ctx.message.author.voice.channel.id)
+
+        except discord.errors.Forbidden:
+            #error_message = f"```I do not have permissions to join the channel: {ctx.message.author.voice.channel}.```"
+            # self.bot.log.error()
+            await ctx.message.channel.send(
+                f"```I do not have permissions to join the channel: {ctx.message.author.voice.channel}.```"
+            )
+            return False
+        except Exception as e:
+            await ctx.message.channel.send(
+                f"```An undefined error occured: {e}```")
+            return False
+        return True
 
     @commands.group(aliases=['m'])
     @TGACog.check_permissions()
@@ -125,21 +151,12 @@ class Music(TGACog):
 
         new_queue = []
 
-        if ctx.message.author.voice is None:
-
-            await ctx.message.channel.send(
-                "```You need to join a voice channel in order to listen to music.```"
-            )
+        # Ensure that the requesting user is connected to a voice channel and ensure the bot can connect to it.
+        if not await self._check_if_user_is_voice_connected(
+                ctx) or not await self._check_voice_channel_connectivity(ctx):
             return
 
-        try:
-            await ctx.bot.fetch_channel(ctx.message.author.voice.channel.id)
-        except Exception:
-            await ctx.message.channel.send(
-                f"```I do not have permissions to join the channel: {ctx.message.author.voice.channel}.```"
-            )
-            return
-
+        # If the user did not enter any arguments for play (something to search for) display a message about how to search
         if len(args) == 0:
             await ctx.send('\n'.join((
                 "```To play music, search for an artist, album, or song using:",
@@ -148,9 +165,9 @@ class Music(TGACog):
             )))
             return
 
-        new_queue = self.search_library(' '.join(args))
+        new_queue = self._search_library(' '.join(args))
 
-        if len(new_queue) == 0:
+        if not new_queue:
             await ctx.message.channel.send(
                 f"```Sorry, I couldn't find any music which matches your search critera: {' '.join(args)}```"
             )
@@ -177,7 +194,7 @@ class Music(TGACog):
 
         random.shuffle(self.curr_queue)
 
-        self.play_next()
+        self._play_next()
         await ctx.message.channel.send(
             f"```Now playing: {self.get_song_metadata(self.curr_queue[self.curr_song])}```"
         )
@@ -304,10 +321,16 @@ class Music(TGACog):
                     # Divide by 1000 because even at volume 1, it was always far too loud
                     self.voice_client.source.volume = self.curr_volume = my_volume / 1000
                 else:
-                    raise Exception("Invalid Value")
-            except Exception:
+                    raise Exception(ValueError)
+            except ValueError:
                 await ctx.message.channel.send(
                     "For volume please enter a value between 0 and 100.")
+            except Exception as e:
+                await ctx.message.channel.send(f"An unknown error occured: {e}"
+                                               )
+        else:
+            await ctx.message.channel.send(
+                "Bot is not connected to a voice channel.")
 
     @music.command(aliases=['c'])
     @TGACog.check_permissions()
@@ -315,26 +338,27 @@ class Music(TGACog):
         '''
         Moves the bot to the your current voice channel.
         '''
-        if ctx.message.author.voice is None:
-
-            await ctx.message.channel.send(
-                "```You need to join a voice channel in order to listen to music.```"
-            )
-            return
-
-        try:
-            await ctx.bot.fetch_channel(ctx.message.author.voice.channel.id)
-        except Exception:
-            await ctx.message.channel.send(
-                f"```I do not have access to join the channel: {ctx.message.author.voice.channel}.```"
-            )
+        if not await self._check_if_user_is_voice_connected(
+                ctx) or not await self._check_voice_channel_connectivity(ctx):
             return
 
         if not isinstance(self.voice_client,
                           str) and self.voice_client.is_playing():
+
             channel = ctx.guild.get_channel(
                 ctx.message.author.voice.channel.id)
+            # As of discord.py 1.5.0 the bot will disconnect if the voice channels are hosted on different servers
+            # We have to pause if there is music playing, then move, then resume
+            # If we do not pause, it will still move to the new channel
+            # but the song ends and it moves to the next song due to the the internal disconnect which it does
+            # Also seems like we have to sleep for a second or so for the pausing and moving to finish
+            # https://github.com/Rapptz/discord.py/issues/5904
+            self.voice_client.pause()
+            sleep(1)
             await self.voice_client.move_to(channel)
+            sleep(1)
+            self.voice_client.resume()
+
         else:
             await ctx.message.channel.send(
                 "```I need to be playing music in order to come to your channel.```"
