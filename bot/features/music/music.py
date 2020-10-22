@@ -10,20 +10,6 @@ from discord.ext import commands
 from bot.features.tgacog import TGACog
 
 
-def check_permissions():
-    async def predicate(ctx, *args):
-        if ctx.invoked_subcommand:
-            cmd_permissions = ctx.cog.permissions.get(
-                ctx.invoked_subcommand.name)
-        else:
-            cmd_permissions = ctx.cog.permissions.get(ctx.command.name)
-
-        return any(role for role in ctx.author.roles
-                   if role.name in cmd_permissions)
-
-    return commands.check(predicate)
-
-
 class Music(TGACog):
     """
     Sit back and enjoy some chill tunes
@@ -119,7 +105,7 @@ class Music(TGACog):
         self.play_next()
 
     @commands.group(aliases=['m'])
-    @check_permissions()
+    @TGACog.check_permissions()
     async def music(self, ctx):
         '''
         Commands related to playing music.
@@ -128,7 +114,7 @@ class Music(TGACog):
         pass
 
     @music.command(aliases=['p'])
-    @check_permissions()
+    @TGACog.check_permissions()
     async def play(self, ctx, *args):
         '''
         Searches for an artist, album, or song and places
@@ -201,7 +187,7 @@ class Music(TGACog):
         )
 
     @music.command(aliases=['q'])
-    @check_permissions()
+    @TGACog.check_permissions()
     async def queue(self, ctx):
         '''
         Displays information about the current song queue.
@@ -227,7 +213,7 @@ class Music(TGACog):
                 ''')
 
     @music.command(aliases=['n'])
-    @check_permissions()
+    @TGACog.check_permissions()
     async def next(self, ctx):
         '''
         Plays the next song in the queue.
@@ -247,7 +233,7 @@ class Music(TGACog):
             )
 
     @music.command(aliases=['pr', 'prev'])
-    @check_permissions()
+    @TGACog.check_permissions()
     async def previous(self, ctx):
         '''
         Plays the previous song in the queue.
@@ -269,7 +255,7 @@ class Music(TGACog):
             )
 
     @music.command(aliases=['s'])
-    @check_permissions()
+    @TGACog.check_permissions()
     async def stop(self, ctx):
         '''
         Stop the audio stream and clear the music queue.
@@ -280,7 +266,7 @@ class Music(TGACog):
         await self.voice_client.disconnect()
 
     @music.command(aliases=['pa'])
-    @check_permissions()
+    @TGACog.check_permissions()
     async def pause(self, ctx):
         '''
         Pauses the current song.
@@ -289,7 +275,7 @@ class Music(TGACog):
             self.voice_client.pause()
 
     @music.command(aliases=['r'])
-    @check_permissions()
+    @TGACog.check_permissions()
     async def resume(self, ctx):
         '''
         Resumes the current song.
@@ -298,7 +284,7 @@ class Music(TGACog):
             self.voice_client.resume()
 
     @music.command(aliases=['cs', 'curr'])
-    @check_permissions()
+    @TGACog.check_permissions()
     async def current(self, ctx):
         '''
         Displays metadata for the current song.
@@ -309,7 +295,7 @@ class Music(TGACog):
             )
 
     @music.command(aliases=['v'])
-    @check_permissions()
+    @TGACog.check_permissions()
     async def volume(self, ctx, args):
         '''
         Adjusts the volume to the specified level.
@@ -328,7 +314,7 @@ class Music(TGACog):
                     "For volume please enter a value between 0 and 100.")
 
     @music.command(aliases=['c'])
-    @check_permissions()
+    @TGACog.check_permissions()
     async def come(self, ctx):
         '''
         Moves the bot to the your current voice channel.
