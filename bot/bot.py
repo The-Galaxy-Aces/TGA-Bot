@@ -67,7 +67,7 @@ class Bot(discord.ext.commands.Bot):
             os.mkdir(LOG_PATH)
 
         self.log = logging.getLogger(f"{self.name} Logger")
-        self.log.setLevel(self.logging.get('logging_level', 'DEBUG'))
+        self.log.setLevel(self.logging.get('logging_level', 'NOTSET'))
         self.handler = logging.FileHandler(filename=FILE_PATH)
         self.handler.setFormatter(logging.Formatter(FORMAT))
         self.log.addHandler(self.handler)
