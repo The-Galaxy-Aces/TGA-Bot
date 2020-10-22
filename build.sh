@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 ALPINE_BUILD_PKGS="--virtual .voice-build-deps build-base libffi-dev libsodium-dev musl-dev"
-ALPINE_REQUIRED_PKGS="libffi libsodium opus-dev ffmpeg gcc python3 python3-dev"
+ALPINE_REQUIRED_PKGS="libffi libsodium opus-dev ffmpeg gcc python3 python3-dev py-virtualenv"
 
 DEBIAN_BUILD_PKGS="build-essential libffi-dev libsodium-dev musl-dev"
 DEBIAN_REQUIRED_PKGS="libffi7 libsodium23 libopus-dev ffmpeg gcc python3 python3-dev python3-virtualenv"
