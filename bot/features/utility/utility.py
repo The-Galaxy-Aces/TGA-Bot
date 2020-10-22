@@ -24,6 +24,23 @@ class Utility(TGACog):
         # Return the context
         return await self.bot.get_context(message)
 
+    async def _determine_command(self, cog_command, args):
+
+        my_command = ""
+        cmd = args.pop()
+
+        if isinstance(cog_command, commands.core.Group):
+            command_set = cog_command.commands
+            while command_set:
+                command = command_set.pop()
+                my_command = f"{cmd} {await self._determine_command(command, args[:])}"
+
+        elif isinstance(cog_command, commands.core.Command):
+            if cmd == cog_command.name or cmd in cog_command.aliases:
+                my_command = cmd
+
+        return my_command
+
     @commands.Cog.listener()
     async def on_raw_message_edit(self, payload):
 
@@ -32,44 +49,27 @@ class Utility(TGACog):
 
         if content.strip().startswith(self.bot.command_prefix):
 
-            ctx = await self._generate_context_from_payload(payload)
-
             args = content.lstrip(self.bot.command_prefix).split()
 
             cog_commands = self.get_commands()
+            args.reverse()
+            for cog_command in cog_commands:
+                my_command = await self._determine_command(
+                    cog_command, args[:])
+                if my_command:
+                    break
+            args.reverse()
 
-            pprint.pprint(f"commands: {cog_commands}")
+            placeholder = content.replace(my_command, "").lstrip(
+                self.bot.command_prefix).strip()
 
-            # Execute as a group
-            if isinstance(cog_commands[0], commands.core.Group):
-
-                command_set = cog_commands[0].commands
-
-                while command_set:
-                    command = command_set.pop()
-
-                    print(f"command: {command}")
-                    print(f"command: {type(command)}")
-
-                # for command in command_set:
-                # print(command.name)
-                '''print(f"name: {cog_commands[0].name}")
-                print(f"aliases: {cog_commands[0].aliases}")
-                print(f"commands: {cog_commands[0].commands.pop()}")
-                print(f"full_parent_name: {cog_commands[0].full_parent_name}")
-                print(f"clean_params: {cog_commands[0].clean_params}")
-                print(f"parents: {cog_commands[0].parents}")
-                print(f"qualified_name: {cog_commands[0].qualified_name}")
-                print(f"root_parent: {cog_commands[0].root_parent}")
-                print(f"signature: {cog_commands[0].signature}")'''
-
-                command = f"{args[0]} {args[1]}"
-
-                await self.bot.get_command(command).callback(
-                    self, ctx, args[2])
+            # Get the context and invoke the command
+            ctx = await self._generate_context_from_payload(payload)
+            if placeholder:
+                await self.bot.get_command(my_command).callback(
+                    self, ctx, placeholder)
             else:
-                pass
-                # Execute as a command
+                await self.bot.get_command(my_command).callback(self, ctx)
 
     @commands.group(aliases=['u'])
     @TGACog.check_permissions()
@@ -102,6 +102,10 @@ class Utility(TGACog):
             )
         except Exception as e:
             await ctx.message.channel.send(f'An unknown error occured: {e}')
+
+    @commands.command(aliases=['t'])
+    async def te(self, ctx):
+        print('test')
 
     @utility.error
     @roll.error
