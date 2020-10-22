@@ -126,6 +126,20 @@ class Music(TGACog):
             return False
         return True
 
+    def _build_queue_messsage(self):
+        queueString = [
+            f"{f'Previous song: {self.get_song_metadata(self.curr_queue[self.curr_song-1])}' if self.curr_song > 0 else ''}"
+        ]
+
+        queueString.append(
+            f"{f'Current song: {self.get_song_metadata(self.curr_queue[self.curr_song])}' if self.curr_song >= 0 else ''}"
+        )
+        queueString.append(
+            f"{f'Next song: {self.get_song_metadata(self.curr_queue[self.curr_song+1])}' if self.curr_song + 1 < len(self.curr_queue) else ''}"
+        )
+        sep = "\n"
+        return f"```{sep.join(queueString)}```"
+
     @commands.group(aliases=['m'])
     @TGACog.check_permissions()
     async def music(self, ctx):
@@ -206,20 +220,7 @@ class Music(TGACog):
         Displays information about the current song queue.
         '''
         if self.curr_queue:
-            queueString = [
-                f"{f'Previous song: {self.get_song_metadata(self.curr_queue[self.curr_song-1])}' if self.curr_song > 0 else ''}"
-            ]
-
-            queueString.append(
-                f"{f'Current song: {self.get_song_metadata(self.curr_queue[self.curr_song])}' if self.curr_song >= 0 else ''}"
-            )
-            queueString.append(
-                f"{f'Next song: {self.get_song_metadata(self.curr_queue[self.curr_song+1])}' if self.curr_song + 1 < len(self.curr_queue) else ''}"
-            )
-            sep = "\n"
-            await ctx.message.channel.send(f'''
-                ```{sep.join(queueString)}```
-                ''')
+            await ctx.message.channel.send(f"{self._build_queue_messsage()}")
         else:
             await ctx.message.channel.send('''
                 ```The music queue is currently empty.```
@@ -314,12 +315,16 @@ class Music(TGACog):
         Shuffles the current music queue. The currently playing song is moved to the
         beginning of the queue and the rest of the queue is shuffled.
         '''
-        if self.curr_queue:
-            current_song = self.curr_queue[self.curr_song]
-            random.shuffle(self.curr_queue)
-            self.curr_queue.remove(current_song)
-            self.curr_queue.insert(0, current_song)
-            self.curr_song = 0
+        if not self.curr_queue:
+            return await ctx.message.channel.send("Nothing to shuffle.")
+
+        current_song = self.curr_queue[self.curr_song]
+        random.shuffle(self.curr_queue)
+        self.curr_queue.remove(current_song)
+        self.curr_queue.insert(0, current_song)
+        self.curr_song = 0
+        await ctx.message.channel.send(
+            f"***Shuffled:***{self._build_queue_messsage()}")
 
     @music.command(aliases=['v'])
     @TGACog.check_permissions()
