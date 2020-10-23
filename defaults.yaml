@@ -50,3 +50,10 @@
         - .ogg
         - .wav
         - .wmv
+    utility:
+      enabled: True
+      permissions:
+        utility:
+          - "@everyone"
+        roll:
+          - "@everyone"
