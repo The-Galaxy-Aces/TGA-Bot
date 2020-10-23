@@ -4,16 +4,16 @@ ALPINE_BUILD_PKGS="--virtual .voice-build-deps build-base libffi-dev libsodium-d
 ALPINE_REQUIRED_PKGS="libffi libsodium opus-dev ffmpeg gcc python3 python3-dev"
 
 DEBIAN_BUILD_PKGS="build-essential libffi-dev libsodium-dev musl-dev"
-DEBIAN_REQUIRED_PKGS="libffi7 libsodium23 libopus-dev ffmpeg gcc python3 python3-dev python3-virtualenv"
+DEBIAN_REQUIRED_PKGS="libffi7 libsodium23 libopus-dev ffmpeg gcc python3 python3-dev python3-venv"
 
-LOG_DIR="/var/log/discordbot"
+LOG_DIR="/var/log/discord_bot"
 SYSTEM=$(grep "\bID=\b" /etc/os-release | grep -v "\"" | awk -F '=' '{print $2}')
 VENV="venv"
 
 install_TGABot(){
   if [ ! -d "$VENV" ]; then
     echo Creating Virtual Environment
-    virtualenv -p python3 "$VENV"
+    python3 -m venv "$VENV"
   fi
 
   # shellcheck disable=SC1091 # Don't follow source

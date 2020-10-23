@@ -5,6 +5,7 @@ from time import localtime, strftime
 
 from bot.features.insult.insult import Insult
 from bot.features.music.music import Music
+from bot.features.utility.utility import Utility
 
 
 class Bot(discord.ext.commands.Bot):
@@ -75,7 +76,8 @@ class Bot(discord.ext.commands.Bot):
     def _enable_features(self):
         VALID_FEATURES = {
             "insult" : Insult,
-            "music" : Music
+            "music" : Music,
+            "utility" : Utility
         }
 
         print(f"{self.name} enabled features:", end="\n")
