@@ -283,7 +283,7 @@ It is also recommended but not required that each bot have a unique command pref
 |---|:---:|---|
 |name|`null`|A name for the bot. It can be unique if you want, but is not required. However it will be more difficult to distingush multiple bots if you are running multiple.|
 |token|`null`|A discord developer API token. You can get one [here](https://discord.com/developers/applications)
-|command_prefix|`"!"`|A single character which you will use to preface all commands for this bot e.g. `!music`|
+|command_prefix|`"!"`|A single character which you will use to preface all commands for this bot e.g. `!music` *Note: It's best to wrap your command prefix in quotes to ensure compatability*|
 |logging|`NOTSET`|The level of logging. Possible options: NOTSET, INFO, WARNING, ERROR, DEBUG
 
 
