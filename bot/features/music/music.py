@@ -337,20 +337,20 @@ class Music(TGACog):
             if not args:
                 current_volume = int(self.voice_client.source.volume * 1000)
                 await ctx.message.channel.send(f"Volume currently @ {current_volume}")
-                return
-            try:
-                my_volume = int(args)
-                if my_volume >= 0 and my_volume <= 100:
-                    # Divide by 1000 because even at volume 1, it was always far too loud
-                    self.voice_client.source.volume = self.curr_volume = my_volume / 1000
-                else:
-                    raise Exception(ValueError)
-            except ValueError:
-                await ctx.message.channel.send(
-                    "For volume please enter a value between 0 and 100.")
-            except Exception as e:
-                await ctx.message.channel.send(f"An unknown error occured: {e}"
-                                               )
+            else:
+                try:
+                    my_volume = int(args)
+                    if my_volume >= 0 and my_volume <= 100:
+                        # Divide by 1000 because even at volume 1, it was always far too loud
+                        self.voice_client.source.volume = self.curr_volume = my_volume / 1000
+                    else:
+                        raise Exception(ValueError)
+                except ValueError:
+                    await ctx.message.channel.send(
+                        "For volume please enter a value between 0 and 100.")
+                except Exception as e:
+                    await ctx.message.channel.send(f"An unknown error occured: {e}"
+                                                )
         else:
             await ctx.message.channel.send(
                 "Bot is not connected to a voice channel.")
