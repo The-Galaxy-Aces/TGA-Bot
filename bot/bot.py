@@ -33,7 +33,7 @@ class Bot(discord.ext.commands.Bot):
         self.bot_id = CONFIG.get('bot_id')
         self.command_prefix = CONFIG.get('command_prefix')
         self.enabled_features = CONFIG.get('enabled_features')
-        self.logging = CONFIG.get('logging')
+        self.logging = CONFIG.get('logging', 'NOTSET')
         self.name = CONFIG.get('name')
         self.token = CONFIG.get('token')
         super().__init__(self.command_prefix)
@@ -68,7 +68,7 @@ class Bot(discord.ext.commands.Bot):
             os.mkdir(LOG_PATH)
 
         self.log = logging.getLogger(f"{self.name} Logger")
-        self.log.setLevel(self.logging.get('logging_level', 'NOTSET'))
+        self.log.setLevel(self.logging)
         self.handler = logging.FileHandler(filename=FILE_PATH)
         self.handler.setFormatter(logging.Formatter(FORMAT))
         self.log.addHandler(self.handler)
