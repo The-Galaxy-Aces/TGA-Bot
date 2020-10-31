@@ -1,9 +1,7 @@
 - name:
   token:
   command_prefix: "!"
-  logging:
-    enabled: True
-    logging_level: INFO
+  logging: NOTSET
   enabled_features:
     insult:
       enabled: True
