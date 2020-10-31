@@ -328,12 +328,16 @@ class Music(TGACog):
 
     @music.command(aliases=['v'])
     @TGACog.check_permissions()
-    async def volume(self, ctx, args):
+    async def volume(self, ctx, args=None):
         '''
         Adjusts the volume to the specified level.
         Where <args> is an integer between 0 and 100
         '''
         if self.voice_client and self.voice_client.is_connected():
+            if not args:
+                current_volume = int(self.voice_client.source.volume * 1000)
+                await ctx.message.channel.send(f"Volume currently @ {current_volume}")
+                return
             try:
                 my_volume = int(args)
                 if my_volume >= 0 and my_volume <= 100:
