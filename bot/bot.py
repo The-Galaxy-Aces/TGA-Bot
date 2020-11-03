@@ -89,7 +89,7 @@ class Bot(discord.ext.commands.Bot):
             else:
                 if self.enabled_features[feature]["enabled"]:
                     cog = VALID_FEATURES[feature](self)
-                    cog.enable_cog()
+                    cog.toggle_cog()
                     self.cog_list.append(cog)
                     print(f"  {feature}", end="\n")
 

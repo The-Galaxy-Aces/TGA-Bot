@@ -7,7 +7,7 @@ import threading
 from time import sleep
 import pathlib
 from discord.ext import commands
-from bot.features.tgacog import TGACog
+from bot.features.tgacog import TGACog, check_permissions
 
 
 class Music(TGACog):
@@ -31,7 +31,7 @@ class Music(TGACog):
 
         # Load Music Feature CONFIG
         REQUIRED_PARAMS = ['local_path', 'audio_types', 'search_frequency']
-        self.process_config(self.bot, REQUIRED_PARAMS)
+        self._process_config(REQUIRED_PARAMS)
 
         # Load required setttings for local music
         self.local_path = self.CONFIG['local_path']
@@ -128,30 +128,30 @@ class Music(TGACog):
 
     def _build_queue_messsage(self):
         queueString = [
-            f"{f'Previous song: {self.get_song_metadata(self.curr_queue[self.curr_song-1])}' if self.curr_song > 0 else ''}"
+            f"{f'Previous song: {self._get_song_metadata(self.curr_queue[self.curr_song-1])}' if self.curr_song > 0 else ''}"
         ]
 
         queueString.append(
-            f"{f'Current song: {self.get_song_metadata(self.curr_queue[self.curr_song])}' if self.curr_song >= 0 else ''}"
+            f"{f'Current song: {self._get_song_metadata(self.curr_queue[self.curr_song])}' if self.curr_song >= 0 else ''}"
         )
         queueString.append(
-            f"{f'Next song: {self.get_song_metadata(self.curr_queue[self.curr_song+1])}' if self.curr_song + 1 < len(self.curr_queue) else ''}"
+            f"{f'Next song: {self._get_song_metadata(self.curr_queue[self.curr_song+1])}' if self.curr_song + 1 < len(self.curr_queue) else ''}"
         )
         sep = "\n"
         return f"```{sep.join(queueString)}```"
 
     @commands.group(aliases=['m'])
-    @TGACog.check_permissions()
-    async def music(self, ctx):
+    @check_permissions()
+    async def _music(self, ctx):
         '''
         Commands related to playing music.
         '''
         # TODO Send !help command to the channel, not sure how to make this happen yet
         pass
 
-    @music.command(aliases=['p'])
-    @TGACog.check_permissions()
-    async def play(self, ctx, *args):
+    @_music.command(aliases=['p'])
+    @check_permissions()
+    async def _play(self, ctx, *args):
         '''
         Searches for an artist, album, or song and places
         all the matches into the queue and starts playing.
@@ -210,12 +210,12 @@ class Music(TGACog):
 
         self._play_next()
         await ctx.message.channel.send(
-            f"```Now playing: {self.get_song_metadata(self.curr_queue[self.curr_song])}```"
+            f"```Now playing: {self._get_song_metadata(self.curr_queue[self.curr_song])}```"
         )
 
-    @music.command(aliases=['q'])
-    @TGACog.check_permissions()
-    async def queue(self, ctx):
+    @_music.command(aliases=['q'])
+    @check_permissions()
+    async def _queue(self, ctx):
         '''
         Displays information about the current song queue.
         '''
@@ -226,19 +226,19 @@ class Music(TGACog):
                 ```The music queue is currently empty.```
                 ''')
 
-    @music.command(aliases=['n'])
-    @TGACog.check_permissions()
-    async def next(self, ctx):
+    @_music.command(aliases=['n'])
+    @check_permissions()
+    async def _next(self, ctx):
         '''
         Plays the next song in the queue.
         '''
         self.voice_client.stop()
 
-    @next.after_invoke
-    async def after_next(self, ctx):
+    @_next.after_invoke
+    async def _after_next(self, ctx):
         if self.curr_song + 1 < len(self.curr_queue):
             await ctx.message.channel.send(
-                f"```Now playing: {self.get_song_metadata(self.curr_queue[self.curr_song + 1])}```"
+                f"```Now playing: {self._get_song_metadata(self.curr_queue[self.curr_song + 1])}```"
             )
         else:
             await self.voice_client.disconnect()
@@ -246,9 +246,9 @@ class Music(TGACog):
                 f"```Playback complete. Use the {self.bot.command_prefix}music command to search for and playback more music.```"
             )
 
-    @music.command(aliases=['pr', 'prev'])
-    @TGACog.check_permissions()
-    async def previous(self, ctx):
+    @_music.command(aliases=['pr', 'prev'])
+    @check_permissions()
+    async def _previous(self, ctx):
         '''
         Plays the previous song in the queue.
         '''
@@ -260,17 +260,17 @@ class Music(TGACog):
             await ctx.message.channel.send(
                 "```You're already at the beginning of the queue.```")
 
-    @previous.after_invoke
-    async def after_prev(self, ctx):
+    @_previous.after_invoke
+    async def _after_prev(self, ctx):
         if self.did_prev_execute:
             self.did_prev_execute = False
             await ctx.message.channel.send(
-                f"```Now playing: {self.get_song_metadata(self.curr_queue[self.curr_song + 1])}```"
+                f"```Now playing: {self._get_song_metadata(self.curr_queue[self.curr_song + 1])}```"
             )
 
-    @music.command(aliases=['s'])
-    @TGACog.check_permissions()
-    async def stop(self, ctx):
+    @_music.command(aliases=['s'])
+    @check_permissions()
+    async def _stop(self, ctx):
         '''
         Stop the audio stream and clear the music queue.
         '''
@@ -279,38 +279,38 @@ class Music(TGACog):
         self.voice_client.stop()
         await self.voice_client.disconnect()
 
-    @music.command(aliases=['pa'])
-    @TGACog.check_permissions()
-    async def pause(self, ctx):
+    @_music.command(aliases=['pa'])
+    @check_permissions()
+    async def _pause(self, ctx):
         '''
         Pauses the current song.
         '''
         if self.voice_client.is_playing():
             self.voice_client.pause()
 
-    @music.command(aliases=['r'])
-    @TGACog.check_permissions()
-    async def resume(self, ctx):
+    @_music.command(aliases=['r'])
+    @check_permissions()
+    async def _resume(self, ctx):
         '''
         Resumes the current song.
         '''
         if self.voice_client.is_paused():
             self.voice_client.resume()
 
-    @music.command(aliases=['cs', 'curr'])
-    @TGACog.check_permissions()
-    async def current(self, ctx):
+    @_music.command(aliases=['cs', 'curr'])
+    @check_permissions()
+    async def _current(self, ctx):
         '''
         Displays metadata for the current song.
         '''
         if self.curr_song >= 0 and self.curr_song < len(self.curr_queue):
             await ctx.message.channel.send(
-                f"```Now playing: {self.get_song_metadata(self.curr_queue[self.curr_song])}```"
+                f"```Now playing: {self._get_song_metadata(self.curr_queue[self.curr_song])}```"
             )
 
-    @music.command(aliases=['sh'])
-    @TGACog.check_permissions()
-    async def shuffle(self, ctx):
+    @_music.command(aliases=['sh'])
+    @check_permissions()
+    async def _shuffle(self, ctx):
         '''
         Shuffles the current music queue. The currently playing song is moved to the
         beginning of the queue and the rest of the queue is shuffled.
@@ -326,9 +326,9 @@ class Music(TGACog):
         await ctx.message.channel.send(
             f"***Shuffled:***{self._build_queue_messsage()}")
 
-    @music.command(aliases=['v'])
-    @TGACog.check_permissions()
-    async def volume(self, ctx, args):
+    @_music.command(aliases=['v'])
+    @check_permissions()
+    async def _volume(self, ctx, args):
         '''
         Adjusts the volume to the specified level.
         Where <args> is an integer between 0 and 100
@@ -351,9 +351,9 @@ class Music(TGACog):
             await ctx.message.channel.send(
                 "Bot is not connected to a voice channel.")
 
-    @music.command(aliases=['c'])
-    @TGACog.check_permissions()
-    async def come(self, ctx):
+    @_music.command(aliases=['c'])
+    @check_permissions()
+    async def _come(self, ctx):
         '''
         Moves the bot to the your current voice channel.
         '''
@@ -383,21 +383,21 @@ class Music(TGACog):
                 "```I need to be playing music in order to come to your channel.```"
             )
 
-    @music.error
-    @play.error
-    @queue.error
-    @next.error
-    @previous.error
-    @stop.error
-    @pause.error
-    @resume.error
-    @current.error
-    @volume.error
-    @come.error
-    async def music_cmd_error(self, ctx, error):
-        await self.handle_command_error(ctx, error)
+    @_music.error
+    @_play.error
+    @_queue.error
+    @_next.error
+    @_previous.error
+    @_stop.error
+    @_pause.error
+    @_resume.error
+    @_current.error
+    @_volume.error
+    @_come.error
+    async def _music_cmd_error(self, ctx, error):
+        await self._handle_command_error(ctx, error)
 
-    def get_song_metadata(self, song):
+    def _get_song_metadata(self, song):
         try:
             md = audio_metadata.load(song)
             artist = md["tags"]["albumartist"]
