@@ -6,6 +6,7 @@ import audio_metadata
 import threading
 from time import sleep
 import pathlib
+from math import log
 from discord.ext import commands
 from bot.features.tgacog import TGACog
 
@@ -337,8 +338,10 @@ class Music(TGACog):
             try:
                 my_volume = int(args)
                 if my_volume >= 0 and my_volume <= 100:
-                    # Divide by 1000 because even at volume 1, it was always far too loud
-                    self.voice_client.source.volume = self.curr_volume = my_volume / 1000
+                    # Base 101 logarithm for volume and add one, so we always
+                    # evaluate at least log(101, 1) since 0 is -infinity
+                    self.voice_client.source.volume = self.curr_volume = \
+                        log(101, my_volume + 1)
                 else:
                     raise Exception(ValueError)
             except ValueError:
