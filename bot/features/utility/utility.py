@@ -1,6 +1,6 @@
 import random
 from discord.ext import commands
-from bot.features.tgacog import TGACog
+from bot.features.tgacog import TGACog, check_permissions
 
 
 class Utility(TGACog):
@@ -11,7 +11,7 @@ class Utility(TGACog):
         super().__init__(bot)
 
         REQUIRED_PARAMS = []
-        self.process_config(self.bot, REQUIRED_PARAMS)
+        self._process_config(REQUIRED_PARAMS)
 
     async def _generate_context_from_payload(self, payload):
         # Get the channel the message was edited in.
@@ -41,7 +41,7 @@ class Utility(TGACog):
         return my_command
 
     @commands.Cog.listener()
-    async def on_raw_message_edit(self, payload):
+    async def _on_raw_message_edit(self, payload):
 
         # Get the edited text from the message.
         content = payload.data.get('content')
@@ -71,15 +71,15 @@ class Utility(TGACog):
                 await self.bot.get_command(my_command).callback(self, ctx)
 
     @commands.group(aliases=['u'])
-    @TGACog.check_permissions()
-    async def utility(self, ctx):
+    @check_permissions()
+    async def _utility(self, ctx):
         '''
         Assorted utility commands
         '''
 
-    @utility.command(aliases=['r'])
-    @TGACog.check_permissions()
-    async def roll(self, ctx, *args):
+    @_utility.command(aliases=['r'])
+    @check_permissions()
+    async def _roll(self, ctx, *args):
         '''
         Roll integer - a random value between 0 and your entered value.
         If no value is entered the roll will be between 0 and 100 inclusive.
@@ -101,13 +101,9 @@ class Utility(TGACog):
         except Exception as e:
             await ctx.message.channel.send(f'An unknown error occured: {e}')
 
-    @commands.command(aliases=['t'])
-    async def te(self, ctx):
-        print('test')
-
-    @utility.error
-    @roll.error
-    async def utility_cmd_error(self, ctx, error):
+    @_utility.error
+    @_roll.error
+    async def _utility_cmd_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
             await ctx.message.channel.send(
                 f"Error in {self.__class__.__name__}: {error}")
