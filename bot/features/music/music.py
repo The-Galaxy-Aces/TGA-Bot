@@ -340,10 +340,10 @@ class Music(TGACog):
                 if my_volume >= 0 and my_volume <= 100:
                     # Base 101 logarithm for volume and add one, so we always
                     # evaluate at least log(101, 1) since 0 is -infinity
-                    self.voice_client.source.volume = self.curr_volume = \
-                        log(101, my_volume + 1)
+                    self.voice_client.source.volume = self.curr_volume = 1 - \
+                        log(101 - my_volume, 101)
                 else:
-                    raise Exception(ValueError)
+                    raise ValueError
             except ValueError:
                 await ctx.message.channel.send(
                     "For volume please enter a value between 0 and 100.")
