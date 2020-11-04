@@ -1,18 +1,44 @@
 - name:
   token:
   command_prefix: "!"
-  logging:
-    enabled: True
-    logging_level: INFO
+  logging: NOTSET
   enabled_features:
     insult:
       enabled: True
       permissions:
-        - everyone
+        insult:
+          - "@everyone"
+        torment:
+          - "@everyone"
+        untorment:
+          - "@everyone"
     music:
       enabled: True
       permissions:
-        - everyone
+        music:
+          - "@everyone"
+        play:
+          - "@everyone"
+        queue:
+          - "@everyone"
+        next:
+          - "@everyone"
+        previous:
+          - "@everyone"
+        stop:
+          - "@everyone"
+        pause:
+          - "@everyone"
+        resume:
+          - "@everyone"
+        current:
+          - "@everyone"
+        shuffle:
+          - "@everyone"
+        volume:
+          - "@everyone"
+        come:
+          - "@everyone"
       local_path: /music
       search_frequency: 300
       audio_types:
@@ -22,3 +48,10 @@
         - .ogg
         - .wav
         - .wmv
+    utility:
+      enabled: True
+      permissions:
+        utility:
+          - "@everyone"
+        roll:
+          - "@everyone"
