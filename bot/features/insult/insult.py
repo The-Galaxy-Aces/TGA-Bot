@@ -5,6 +5,9 @@ from bot.features.tgacog import TGACog
 
 
 class Insult(TGACog):
+    '''
+    Auto generate some insults and hurt your friends.
+    '''
     def __init__(self, bot):
         """
         Don't let the mean insults hurt your feelings
@@ -65,7 +68,8 @@ class Insult(TGACog):
         Torments the mentioned user(s) by insulting them with every message.
         '''
         for mention in ctx.message.mentions:
-            if mention.mention not in self.torment_list:
+            if mention.mention not in self.torment_list \
+                    and mention.mention != ctx.bot.user.mention:
                 self.torment_list.append(mention.mention)
 
     @insult.command(aliases=['u'])
