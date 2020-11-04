@@ -14,13 +14,12 @@ class Bot(discord.ext.commands.Bot):
     The Bot class.
     The bot can do lots of neat things
     """
-
     def __init__(self, CONFIG, OSTYPE):
 
         # Check CONFIG for minimal required params to make bot run properly
         REQUIRED_PARAMS = [
-            'bot_id', 'command_prefix', 'enabled_features',
-            'logging', 'name', 'token'
+            'bot_id', 'command_prefix', 'enabled_features', 'logging', 'name',
+            'token'
         ]
 
         MISSING_PARAMS = [
@@ -76,11 +75,7 @@ class Bot(discord.ext.commands.Bot):
         self.log.addHandler(self.handler)
 
     def _enable_features(self):
-        VALID_FEATURES = {
-            "insult": Insult,
-            "music": Music,
-            "utility": Utility
-        }
+        VALID_FEATURES = {"insult": Insult, "music": Music, "utility": Utility}
 
         print(f"{self.name} enabled features:", end="\n")
         for feature in self.enabled_features:
@@ -97,17 +92,3 @@ class Bot(discord.ext.commands.Bot):
 
     def get_token(self):
         return self.token
-
-
-<< << << < HEAD
-
-   def get_poll(self):
-        return Poll(self)
-
-    def get_music(self):
-        return Music(self)
-
-    def get_insult(self):
-        return Insult(self)
-== =====
->>>>>> > origin/main
