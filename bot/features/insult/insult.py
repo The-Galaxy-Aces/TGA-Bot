@@ -37,6 +37,9 @@ class Insult(TGACog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        '''
+        Activates on every message which is sent which the bot has access to read.
+        '''
         for tormented in self.torment_list:
             if tormented == message.author.mention:
                 await message.channel.send(f"{tormented} {self.get_insult()}")
@@ -44,6 +47,9 @@ class Insult(TGACog):
     @commands.group(aliases=['i'])
     @TGACog.check_permissions()
     async def insult(self, ctx):
+        '''
+        Generates an insult against the mentioned user(s)
+        '''
         if ctx.message.author == self.bot.user:
             return
         else:
@@ -55,6 +61,9 @@ class Insult(TGACog):
     @insult.command(aliases=['t'])
     @TGACog.check_permissions()
     async def torment(self, ctx):
+        '''
+        Torments the mentioned user(s) by insulting them with every message.
+        '''
         for mention in ctx.message.mentions:
             if mention.mention not in self.torment_list:
                 self.torment_list.append(mention.mention)
@@ -62,6 +71,9 @@ class Insult(TGACog):
     @insult.command(aliases=['u'])
     @TGACog.check_permissions()
     async def untorment(self, ctx):
+        '''
+        Removes the endless torment from the mentioned user(s).
+        '''
         for mention in ctx.message.mentions:
             self.torment_list.remove(mention.mention)
 
