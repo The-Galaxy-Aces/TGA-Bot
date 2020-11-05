@@ -25,12 +25,7 @@ class Poll(TGACog):
             active [a] - Only display a list of active polls.
         '''
 
-        active = False
-
-        # TODO Clean this up
-        if not args:
-            active = False
-        elif args[0].lower() == "a" or args[0].lower() == "active":
+        if args[0].lower() in ["a", "active"]:
             active = True
 
         if not self.polls:
@@ -76,44 +71,46 @@ class Poll(TGACog):
 
     @poll.command(aliases=['v'])
     async def vote(self, ctx, *args):
+        '''
+        Vote for your favorite option in a poll. Voting is important, always vote!
 
-        if not args:
-            # Raise exception no arguments Display help for vote
-            pass
+        usage: poll vote POLL NAME : option
+        '''
 
-        params = ' '.join(args).split(' : ')
+        try:
+            params = ' '.join(args).split(' : ')
 
-        # Ensure that there are exactly two parameters (poll name and vote)
-        if len(params) == 2:
-            # Raise exception Incorrect parameters
-            pass
+            poll = self.polls.get(params[0])
+            vote = params[1]
 
-        poll = self.polls.get(params[0])
-        vote = params[1]
+            if ctx.author.id not in poll.get("alreadyVoted"):
+                poll.get("values")[vote] += 1
+                poll.get("alreadyVoted").append(ctx.author.id)
+            else:
+                # TODO tell user they have already voted
+                # Maybe we can allow them to switch the vote
+                pass
+            # print(self.polls)
 
-        if not poll:
-            # Raise exception poll does not exist
-            pass
-
-        if ctx.author.id not in poll.get("alreadyVoted"):
-            poll.get("values")[vote] += 1
-            poll.get("alreadyVoted").append(ctx.author.id)
-        else:
-            # TODO tell user they have already voted
-            # Maybe we can allow them to switch the vote
-            pass
-        #print(self.polls)
+        except IndexError as e:
+            await self.handle_command_error(
+                ctx, e,
+                "Incorrect number of parameters were entered. Please check your input."
+            )
+        except Exception as e:
+            await self.handle_command_error(ctx, e)
 
     @poll.command(aliases=['s'])
     async def stats(self, ctx, *args):
         '''View statistics for polls'''
 
         if not args:
-            all_poll_stats = []
-            for poll_name in self.polls:
-                all_poll_stats.append(
-                    self._generate_pretty_poll(poll_name,
-                                               self.polls.get(poll_name)))
+            all_poll_stats = [
+                self._generate_pretty_poll(poll_name,
+                                           self.polls.get(poll_name))
+                for poll_name in self.polls
+            ]
+
             sep = "\n"
             await ctx.message.channel.send(f"{sep.join(all_poll_stats)}")
         else:
@@ -138,9 +135,7 @@ class Poll(TGACog):
             poll_name - A string which contains the name of the poll
             poll - A dictionary which contains the poll and all its associated data.
         '''
-        pretty_poll = []
-        pretty_poll.append(f"```")
-        pretty_poll.append(poll_name)
+        pretty_poll = [f"```", poll_name]
 
         totals = poll.get("values")
         for key in totals.keys():

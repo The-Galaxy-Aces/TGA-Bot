@@ -37,13 +37,17 @@ class TGACog(commands.Cog):
         print(f"{self.bot.name} {self.COG_NAME} is ready!")
         self.ready = True
 
-    async def handle_command_error(self, ctx, error):
+    async def handle_command_error(self, ctx, error, message=None):
         if isinstance(error, commands.BadArgument):
             await ctx.message.channel.send(
-                f"Error in {self.__class__.__name__}: {error}")
+                f"{ctx.author.mention} error in {self.__class__.__name__}: {error}"
+            )
         elif isinstance(error, commands.CheckFailure):
             await ctx.message.channel.send(
-                "You do not have permissions to use that command.")
+                f"{ctx.author.mention} you do not have permissions to use that command."
+            )
+        elif isinstance(error, IndexError):
+            await ctx.message.channel.send(f"{ctx.author.mention} {message}")
         else:
             self.bot.log.error(f"handle_command_error: {error}")
 
