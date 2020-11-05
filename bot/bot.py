@@ -75,7 +75,12 @@ class Bot(discord.ext.commands.Bot):
         self.log.addHandler(self.handler)
 
     def _enable_features(self):
-        VALID_FEATURES = {"insult": Insult, "music": Music, "utility": Utility}
+        VALID_FEATURES = {
+            "insult": Insult,
+            "music": Music,
+            "poll": Poll,
+            "utility": Utility
+        }
 
         print(f"{self.name} enabled features:", end="\n")
         for feature in self.enabled_features:
