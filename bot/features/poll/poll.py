@@ -30,7 +30,7 @@ class Poll(TGACog):
         # TODO Clean this up
         if not args:
             active = False
-        elif args[0].lower() == "a" or args[0].lower() == "active":
+        elif args[0].lower() in ["a", "active"]:
             active = True
 
         if not self.polls:
@@ -109,11 +109,11 @@ class Poll(TGACog):
         '''View statistics for polls'''
 
         if not args:
-            all_poll_stats = []
-            for poll_name in self.polls:
-                all_poll_stats.append(
-                    self._generate_pretty_poll(poll_name,
-                                               self.polls.get(poll_name)))
+            all_poll_stats = [
+                self._generate_pretty_poll(poll_name, self.polls.get(poll_name))
+                for poll_name in self.polls
+            ]
+
             sep = "\n"
             await ctx.message.channel.send(f"{sep.join(all_poll_stats)}")
         else:
@@ -138,10 +138,7 @@ class Poll(TGACog):
             poll_name - A string which contains the name of the poll
             poll - A dictionary which contains the poll and all its associated data.
         '''
-        pretty_poll = []
-        pretty_poll.append(f"```")
-        pretty_poll.append(poll_name)
-
+        pretty_poll = [f"```", poll_name]
         totals = poll.get("values")
         for key in totals.keys():
             pretty_poll.append(f"   {key} : {totals[key]}")
