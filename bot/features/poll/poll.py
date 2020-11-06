@@ -1,19 +1,22 @@
 from discord.ext import commands
 from bot.features.tgacog import TGACog
-import pprint
 
 
 class Poll(TGACog):
     '''Create a Poll'''
     def __init__(self, bot):
-
+        '''
+        Initialize the bot from the TGACog parent class.
+        '''
         super().__init__(bot)
 
         self.polls = {}
 
     @commands.group(aliases=['p'])
     async def poll(self, ctx):
-        '''Create a poll and spread democracy throughout your Discord!'''
+        '''
+        Create a poll and spread democracy throughout your Discord!
+        '''
 
     @poll.command(aliases=['l'])
     async def list(self, ctx, *args):
@@ -24,7 +27,6 @@ class Poll(TGACog):
         params:
             active [a] - Only display a list of active polls.
         '''
-
         if args[0].lower() in ["a", "active"]:
             active = True
 
@@ -103,7 +105,6 @@ class Poll(TGACog):
     @poll.command(aliases=['s'])
     async def stats(self, ctx, *args):
         '''View statistics for polls'''
-
         if not args:
             all_poll_stats = [
                 self._generate_pretty_poll(poll_name,
@@ -127,22 +128,23 @@ class Poll(TGACog):
     async def music_cmd_error(self, ctx, error):
         await self.handle_command_error(ctx, error)
 
-    def _generate_pretty_poll(self, poll_name, poll):
-        '''
-        Creates a pretty formatted string for the poll and its associated values.
 
-        params:
-            poll_name - A string which contains the name of the poll
-            poll - A dictionary which contains the poll and all its associated data.
-        '''
-        pretty_poll = [f"```", poll_name]
+def generate_pretty_poll(poll_name, poll):
+    '''
+    Creates a pretty formatted string for the poll and its associated values.
 
-        totals = poll.get("values")
-        for key in totals.keys():
-            pretty_poll.append(f"   {key} : {totals[key]}")
-        pretty_poll.append("```")
+    params:
+        poll_name - A string which contains the name of the poll
+        poll - A dictionary which contains the poll and all its associated data.
+    '''
+    pretty_poll = ["```", poll_name]
 
-        sep = "\n"
-        pretty_poll = sep.join(pretty_poll)
+    totals = poll.get("values")
+    for key in totals.keys():
+        pretty_poll.append(f"   {key} : {totals[key]}")
+    pretty_poll.append("```")
 
-        return pretty_poll
+    sep = "\n"
+    pretty_poll = sep.join(pretty_poll)
+
+    return pretty_poll
