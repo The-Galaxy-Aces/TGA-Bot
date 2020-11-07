@@ -7,11 +7,11 @@ import sys
 from bot.bot import Bot
 from bot.tgacli import TGACli
 
+
 def main():
 
     CONFIG_FILE = "config.yaml"
     OSTYPE = sys.platform
-
 
     async def threaded_bot(bot):
         await bot.start(bot.get_token())
@@ -20,9 +20,8 @@ def main():
         if not loop.is_running():
             loop.run_forever()
 
-    def signal_handler(sig,frame):
+    def signal_handler(sig, frame):
         sys.exit(0)
-
 
     # Check for config file
     if not os.path.exists(CONFIG_FILE):

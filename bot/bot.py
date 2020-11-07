@@ -5,6 +5,7 @@ from time import localtime, strftime
 
 from bot.features.insult.insult import Insult
 from bot.features.music.music import Music
+from bot.features.poll.poll import Poll
 from bot.features.utility.utility import Utility
 
 
@@ -17,8 +18,8 @@ class Bot(discord.ext.commands.Bot):
 
         # Check CONFIG for minimal required params to make bot run properly
         REQUIRED_PARAMS = [
-            'bot_id', 'command_prefix','enabled_features',
-            'logging', 'name', 'token'
+            'bot_id', 'command_prefix', 'enabled_features', 'logging', 'name',
+            'token'
         ]
 
         MISSING_PARAMS = [
@@ -55,8 +56,8 @@ class Bot(discord.ext.commands.Bot):
         or it will append to current log file if one exists.
         """
         LOG_PATHS = {
-            "win32" : "logs",
-            "linux" : os.path.join("/var", "log", "discord_bot"),
+            "win32": "logs",
+            "linux": os.path.join("/var", "log", "discord_bot"),
         }
         LOG_PATH = LOG_PATHS[self.os_type]
         DATE_STAMP = strftime("%Y-%m-%d", localtime())
@@ -75,9 +76,10 @@ class Bot(discord.ext.commands.Bot):
 
     def _enable_features(self):
         VALID_FEATURES = {
-            "insult" : Insult,
-            "music" : Music,
-            "utility" : Utility
+            "insult": Insult,
+            "music": Music,
+            "poll": Poll,
+            "utility": Utility
         }
 
         print(f"{self.name} enabled features:", end="\n")

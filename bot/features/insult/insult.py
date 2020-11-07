@@ -43,7 +43,6 @@ class Insult(TGACog):
         '''
         Activates on every message which is sent which the bot has access to read.
         '''
-        # Torment a user if they exist in the torment list and sent the message.
         for tormented in self.torment_list:
             if tormented == message.author.mention:
                 await message.channel.send(f"{tormented} {self.get_insult()}")
