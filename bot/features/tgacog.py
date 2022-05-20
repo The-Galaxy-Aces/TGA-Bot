@@ -15,10 +15,9 @@ class TGACog(commands.Cog):
 
     def process_config(self, bot, REQUIRED_PARAMS):
 
-        MISSING_PARAMS = [
+        if MISSING_PARAMS := [
             param for param in REQUIRED_PARAMS if not self.CONFIG.get(param)
-        ]
-        if MISSING_PARAMS:
+        ]:
             raise AssertionError(f"config.yaml missing {MISSING_PARAMS}")
 
     def get_permissions(self, bot):

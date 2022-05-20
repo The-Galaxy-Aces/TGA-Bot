@@ -21,11 +21,9 @@ class Bot(discord.ext.commands.Bot):
             'logging', 'name', 'token'
         ]
 
-        MISSING_PARAMS = [
+        if MISSING_PARAMS := [
             param for param in REQUIRED_PARAMS if not CONFIG.get(param)
-        ]
-
-        if MISSING_PARAMS:
+        ]:
             raise AssertionError(f"config.yaml missing {MISSING_PARAMS}")
 
         # Start bot construction
@@ -87,12 +85,11 @@ class Bot(discord.ext.commands.Bot):
             # Check to ensure features being fed in are actually there
             if feature.lower() not in VALID_FEATURES:
                 self.log.error(f"Config feature, {feature}, does not exist")
-            else:
-                if self.enabled_features[feature]["enabled"]:
-                    cog = VALID_FEATURES[feature](self)
-                    cog.enable_cog()
-                    self.cog_list.append(cog)
-                    print(f"  {feature}", end="\n")
+            elif self.enabled_features[feature]["enabled"]:
+                cog = VALID_FEATURES[feature](self)
+                cog.enable_cog()
+                self.cog_list.append(cog)
+                print(f"  {feature}", end="\n")
 
     def get_token(self):
         return self.token
