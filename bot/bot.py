@@ -44,6 +44,7 @@ class Bot(discord.ext.commands.Bot):
 
         if self.logging:
             self._setup_logging()
+        self.log.info(f"Logging level: {self.logging}")
 
         self._enable_features()
 
