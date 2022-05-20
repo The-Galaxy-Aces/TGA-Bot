@@ -38,6 +38,7 @@ class TGACog(commands.Cog):
         self.ready = True
 
     async def handle_command_error(self, ctx, error):
+        self.bot.log.debug(f"handle_command_error: {error}")
         if isinstance(error, commands.BadArgument):
             await ctx.message.channel.send(
                 f"Error in {self.__class__.__name__}: {error}")

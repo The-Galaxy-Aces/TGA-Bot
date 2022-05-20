@@ -81,12 +81,14 @@ class Music(TGACog):
 
     def _search_library(self, pattern):
 
+        self.bot.log.debug(f"_search_library: Searching for pattern: {pattern} songs.")
         return [
             song for song in self.local_library
             if fnmatch.fnmatch(f"{song.lower()}", f"*{pattern.lower()}*")
         ]
 
     def _play_next(self):
+        self.bot.log.debug(f"_play_next")
         if self.curr_song >= 0 and self.curr_song < len(self.curr_queue):
             self.voice_client.play(discord.PCMVolumeTransformer(
                 discord.FFmpegPCMAudio(self.curr_queue[self.curr_song],
@@ -97,10 +99,12 @@ class Music(TGACog):
             self.voice_client.stop()
 
     def _finished_song(self):
+        self.bot.log.debug(f"_finished_song")
         self.curr_song += 1
         self._play_next()
 
     async def _check_if_user_is_voice_connected(self, ctx):
+        self.bot.log.debug(f"_check_if_user_is_voice_connected")
         if ctx.message.author.voice is None:
 
             await ctx.message.channel.send(
@@ -110,6 +114,7 @@ class Music(TGACog):
         return True
 
     async def _check_voice_channel_connectivity(self, ctx):
+        self.bot.log.debug(f"_check_voice_channel_connectivity")
         try:
             await ctx.bot.fetch_channel(ctx.message.author.voice.channel.id)
 
@@ -127,6 +132,7 @@ class Music(TGACog):
         return True
 
     def _build_queue_messsage(self):
+        self.bot.log.debug(f"_build_queue_messsage")
         queueString = [
             f"{f'Previous song: {self.get_song_metadata(self.curr_queue[self.curr_song-1])}' if self.curr_song > 0 else ''}"
         ]
@@ -402,6 +408,7 @@ class Music(TGACog):
         await self.handle_command_error(ctx, error)
 
     def get_song_metadata(self, song):
+        self.bot.log.error(f"get_song_metadata song: {song}")
         try:
             md = audio_metadata.load(song)
             artist = md["tags"]["albumartist"]
